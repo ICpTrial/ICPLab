@@ -79,171 +79,151 @@ IBM Communityチャートリポジトリへの貢献に関するルールは、G
 | [Valuesメタデータ](#values-metadata)| ICP UIで優れたデプロイメント・エクスペリエンスを提供するために、パスワード、許可された値などを含むフィールドのメタデータを定義します。メタデータフォーマットは、オンボーディングガイドに記載されています。 |
 | [ラベルと注釈](#labels-and-annotations)| IBMは、すべてのKubernetesリソースで、すべてのに「heritage, release, chart, app」という標準ラベルを利用することをお勧めします。 |
 | [liveness ProbesとreadinessProve即応性プローブ](#liveness-and-readiness-probes)|ワークロードは、livenessProbesとreadinessProbesを使用して自分のヘルスの監視を有効にする必要があります。 |
-| [Kind](# Kind)|リソースを定義するすべてのHelmテンプレートは`Kind`を持たなければなりません。 Helmはデフォルトでポッドになっていますが、我々はこれを避けています。Helmのベストプラクティスは、単一のtemplateファイルに複数リソースを定義しないことです。|
+| [Kind](#Kind)|リソースを定義するすべてのHelmテンプレートは`Kind`を持たなければなりません。 Helmはデフォルトでポッドになっていますが、我々はこれを避けています。Helmのベストプラクティスは、単一のtemplateファイルに複数リソースを定義しないことです。|
 | [コンテナ・セキュリティ権限](#container-security-privilege)|可能な限り、ワークロードはコンテナーに対して昇格したセキュリティー特権を使用しないでください。チャートに昇格した特権が必要な場合、目的の機能を実現するために必要な最小レベルの特権を要求する必要があります。 |
 | [Kubernetesセキュリティ特権](#kubernetes-security-privilege)|チャートは、クラスタ管理者などの管理ロールを持たない通常のユーザがデプロイできるようにします。昇格した役割が必要な場合は、チャートのREADME.mdに明確にドキュメントされている必要があります。|
 | [hostPathを避ける](#avoid-hostpath)|堅牢なストレージ・ソリューションではないため、hostPathストレージの使用は避けてください。 |
-| [hostNetworkを避ける](#avoid-hostnetwork) hostNetworkを使用することは避けてください。コンテナーが共存することができなくなります。 |
+| [hostNetworkを避ける](#avoid-hostnetwork)|hostNetworkを使用することは避けてください。コンテナーが共存することができなくなります。 |
 | [ドキュメントリソース使用量](#document-resoure-usage)|チャートは消費するリソースについて明確であり、チャートの`README.md`に文書化するべきです。|
-| [メータリング](#metering)|ユーザーがIBM Cloud Privateメータリングサービスで使用量を測定できるように、チャートにメータリング・アノテーションを含める必要があります。 |
+| [メータリング](#metering)|ユーザーがIBM Cloud Privateメータリングサービスで使用量を測定できるように、チャートにメータリング・アノテーションを含める必要があります。|
 | [ロギング](#logging)|ワークロード・コンテナーはログをstdoutおよびstderrに書き出すべきです。これにより、IBM Cloud Privateロギング・サービス(Elasticsearch / Logstash / Kibana)によって自動的に管理されます。また、README.mdに関連するKibanaダッシュボードへのリンクを含めることをお勧めします。ユーザーはそれらをダウンロードしてKibanaにインポートできます。 |
 | [モニタリング](#モニタリング)|ワークロードはデフォルトのIBM Cloud Privateモニタリング・サービス(Prometheus/Grafana)と統合する必要があります。PrometheusメトリックスをKubernetesの`Service`で公開し、そのエンドポイントにアノテーションを付けてIBM Cloud Privateモニタリング・サービスによって自動的に管理されるようにします。 |
 | [ライセンスキーと料金](#ライセンスキーと料金)|ワークロードをデプロイするために、または他の方法でワークロードを使用するために、ライセンス・キーが必要な場合は、チャートのREADME.mdの「前提条件」セクションに記載する必要があります。 |
 
+-----
+# 詳細なガイダンス
 
-#詳細なガイダンス
--------------------------------------
+## チャートの必須要件
+このセクションには、[GUIDELINES.md](https://github.com/IBM/charts/blob/master/GUIDELINES.md)で概説されているように、IBM Communityチャートに貢献するすべてのチャートが従うべき標準のリストが含まれています。チャートは、Helmコミュニティから公開されている[Helmベスト・プラクティス](https://docs.helm.sh/chart_best_practices/)に準拠していることが期待されます。ここでは繰り返しません。
 
-#チャートの要件
+### ディレクトリ構造
+チャートのソースは `chart/community` ディレクトリに追加する必要があります。 helmパッケージを使用して.tgzファイルとしてパッケージ化されたチャートアーカイブは、helmリポジトリである `chart/repo/community `ディレクトリに追加する必要があります。
 
-このセクションには、[GUIDELINES.md](https://github.com/IBM/charts/blob/master/GUIDELINES.md)で概説されているように、IBM Communityチャートに貢献するすべてのチャートが従うべき標準のリストが含まれています。 。チャートは、Helmコミュニティから公開されている[Helmベストプラクティス](https://docs.helm.sh/chart_best_practices/)に準拠していることが期待されます。ここでは再現しません。
+**あなたの成果物で `chart/repo/community/index.yaml`を更新しないでください。index.yamlはプル・リクエストが処理されるときに実行さえっるビルド・プロセスによって自動的に更新されます。**
 
-##ディレクトリ構造
+### チャート名
+Helmチャートの名前は[Helmチャートのベスト・プラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/conventions.md#chart-names)に従ってください。チャート名はチャート・ソースを含むディレクトリと同じである必要があります。会社または組織によって提供されたチャートには、会社または組織の名前を接頭辞として付けることができます。コミュニティからの登録に"ibm-"を付けないでください。
 
-チャートのソースはchart / communityディレクトリに追加する必要があります。 helmパッケージを使用して.tgzファイルとしてパッケージ化されたチャートアーカイブは、helmリポジトリであるchart / repo / communityディレクトリに追加する必要があります。
+### Chartファイルの構造
+チャートは標準のHelmファイル構造に従う必要があります。Chart.yaml、values.yaml、README.md、templates、およびtemplates / NOTES.txtはすべて存在し、有意な内容を持つべきです。
 
-**あなたの貢献で** chart / repo / community / index.yamlを更新しないでください。** index.yamlはプルリクエストが処理されるときにビルドプロセスによって自動的に更新されます。**
+### チャートのキーワード
+ChartキーワードはIBM Cloud Privateユーザー・インターフェースによって使用され、Chart.yamlに含める必要があります。チャートがIBM Cloud Privateでの使用を意図していることを示すためにキーワード`ICP`を使用し、チャートがIBM Cloud Kubernetesサービスでの使用を意図していることを示すためにキーワード`IKS`を使用します。チャートには、 `s390x`、` ppc64le`、そして `amd64`のセットから、それがサポートするハードウェアアーキテクチャを示すための1つ以上のキーワードも含まなければなりません。 UIの分類に使用されるオプションのキーワードのリストは、オプションのガイダンスをカバーするセクションに続きます。
 
-##チャート名
+### チャート・バージョン
+[Helmチャートのベスト・プラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/conventions.md#version-numbers)に従って、SemVer2ナンバリングを使用する必要があります。
 
-舵チャートの名前は[舵チャートのベストプラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/conventions.md#chart-names)に従ってください。チャート名はチャートソースを含むディレクトリと同じである必要があります。会社または組織によって提供されたチャートには、会社または組織の名前を接頭辞として付けることができます。コミュニティからの投稿の前に＆quot; ibm-＆quot;を付けないでください。
+### チャートの説明
+すべてのチャートはchart.yamlにチャートの説明 Description がなければなりません。これはICPカタログUIに表示され、エンドユーザーにとって意味があるものにするべきです。
 
-## Chartファイルの構造
-
-チャートは標準のHelmファイル構造に従う必要があります。Chart.yaml、values.yaml、README.md、templates、およびtemplates / NOTES.txtはすべて存在し、有用な内容を持つべきです。
-
-##チャートのキーワード
-
-ChartキーワードはIBM Cloud Privateユーザー・インターフェースによって使用され、Chart.yamlに含める必要があります。チャートがIBM Cloud Privateでの使用を意図していることを示すためにキーワード「ICP」を使用し、チャートがIBM Cloud Kubernetesサービスでの使用を意図していることを示すためにキーワード「IKS」を使用します。チャートには、 `s390x`、` ppc64le`、そして `amd64`のセットから、それがサポートするハードウェアアーキテクチャを示すための1つ以上のキーワードも含まなければなりません。 UIの分類に使用されるオプションのキーワードのリストは、オプションのガイダンスをカバーするセクションに続きます。
-
-##チャートバージョン
-
-[Helmチャートのベストプラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/conventions.md#version-numbers)に従って、SemVer2番号付けを使用する必要があります。
-
-##チャートの説明
-
-すべてのチャートはchart.yamlにチャートの説明がなければなりません。これはICPカタログUIに表示され、エンドユーザーにとって意味があるはずです。
-
-##ヘルムリント
-
+### helm lint
 すべてのチャートはエラーなしで `helm lint`検証ツールに合格しなければなりません。
 
-##ライセンス
+### ライセンス
+チャート自体はApache 2.0ライセンスであり、チャートのルートにあるLICENSEファイルにApache 2.0ライセンスが含まれている必要があります。チャートは、展開されている製品のライセンスなど、追加のライセンスファイルを`LICENSES`ディレクトリにパッケージ化することもできます。 IBM Cloud Privateユーザー・インターフェースを介してデプロイするときには、LICENSEファイルとLICENSESディレクトリー内のファイルの両方が同意のためにユーザーに表示されます。
 
-チャート自体はApache 2.0ライセンスであり、チャートのルートにあるLICENSEファイルにApache 2.0ライセンスが含まれている必要があります。チャートは、展開されている製品のライセンスなど、追加のライセンスファイルをLICENSESディレクトリにパッケージ化することもできます。 IBM Cloud Privateユーザー・インターフェースを介してデプロイするときには、LICENSEファイルとLICENSESディレクトリー内のファイルの両方が同意のためにユーザーに表示されます。
+### README.md
+提供されるすべてのチャートには、ユーザがチャートをデプロイするために必要となる有用な情報を含む便利なREADME.mdファイルが含まれている必要があります。 IBM Cloud Private GUIでは、README.mdファイルはカタログのチャートをクリックした後にユーザーに表示される「フロント・ページ」です。すべての入力パラメータの完全な説明と記述を強くお勧めします。<br>
+また、チャートをデプロイする前に、ユーザーが IBM Cloud Privateの信頼できるレジストリのリストに自分のレジストリを 追加する必要があることに注意を促してください。IBM Cloud Private 3.1以降、デフォルトで [コンテナ・イメージ・セキュリティ](https://www.ibm.com/support/knowledgecenter/ja/SSBS6K_3.1.0/manage_images/image_security.html)が有効になります。
 
-## README.md
+### サポート文
+README.mdは `Support`とラベルされたセクションを含まなければなりません。このセクションでは、ユーザーが製品に関する緊急の問題のサポートを受けること、ヘルプを得ること、または問題を送信することができる場所への詳細やリンクを提供する必要があります。
 
-提供されるすべてのチャートには、ユーザがチャートをデプロイするために必要となる有用な情報を含む便利なREADME.mdファイルが含まれている必要があります。 IBM Cloud Private GUIでは、README.mdファイルはカタログのチャートをクリックした後にユーザーに表示される「フロントページ」です。すべての入力パラメータの完全な説明と説明を強くお勧めします。
+### NOTES.txt
+すべてのチャートには、使用上の注意、次の手順を表示するための手順、および関連情報を含むNOTES.txtが含まれている必要があります。NOTES.txtは、デプロイ後にIBM Cloud Privateユーザー・インターフェースによって表示されます。
 
-また、チャートを展開する前に、ユーザーが自分のレジストリをIBM Cloud Privateの信頼できるレジストリのリストに追加する必要があることに注意することを強くお勧めします。 [container image security]から、IBM Cloud Privateの信頼できるイメージレジストリのリストにイメージレジストリを追加する方法についての指示(またはリンク)を含めてください(https://www.ibm.com/support/knowledgecenter/en/)。 IBM Cloud Private 3.1以降、SSBS6K_3.1.0 / manage_images / image_security.html)がデフォルトで有効になります。
+### tillerVersion制約
+Semantic Versioning 2.0.0フォーマット（ MAJOR.MINOR.PATCH）に従うtillerVersionをChart.yamlに追加します。このバージョン番号に追加のメタ・データが添付されていないことを確認してください。このチャートが機能することが確認された最も低いバージョンのHelmにこの制約を設定します。
 
-##サポート文
+### デプロイ検証
+チャートをIBM Communityのチャート・リポジトリに追加する`Pull Request`を作成する前に、チャートの所有者は、IBM Cloud Privateのユーザー・インターフェイスとHelmコマンドラインの両方を使用して、チャートが最新バージョンのIBM Cloud Privateに正しくデプロイされることを確認する必要があります。さらに、チャートでは動作しないことがわかっているIBM Cloud Privateのバージョンがある場合は、それらの詳細をREADME.mdの「制限事項」などのセクションに明確に指定する必要があります。例：`このチャートはIBM Cloud Privateバージョン3.1.0以上でのみサポートされています`
+[Vagrantを使用してIBM Cloud Privateをデプロイする](https://github.com/IBM/deploy-ibm-cloud-private/blob/master/docs/deploy-vagrant.md) を利用することで、環境を素早く立ち上げ チャートを確認することができます。
 
-README.mdは `Support`とラベルされたセクションを含まなければなりません。このセクションでは、ユーザーが製品に関する緊急の問題のサポートを受けること、ヘルプを得ること、または問題を送信することができる場所への詳細および/またはリンクを提供する必要があります。
 
-## NOTES.txt
+## 推奨チャート機能
 
-すべてのチャートには、使用上の注意、次の手順を表示するための手順を含むNOTES.txtが含まれている必要があります。関連情報NOTES.txtは、デプロイ後にIBM Cloud Privateユーザー・インターフェースによって表示されます。
+このセクションには、プラットフォームによって提供される機能とサービスを利用することによって、エンドユーザーにIBM Cloud Privateの付加価値を提供する提案のリストが含まれています。これらはIBM Communityチャートリポジトリへの登録には必要ありませんが、それらを実装することを強くお勧めします。それらがIBMによって開発されたチャートで提供されるものと同様の拡張されたエクスペリエンスを提供するためです。
 
-## tillerVersion制約
+### チャート・アイコン
 
-Semantic Versioning 2.0.0フォーマット(\＆gt; = MAJOR.MINOR.PATCH)に従うtillerVersionをChart.yamlに追加します。このバージョン番号に追加のメタデータが添付されていないことを確認してください。このチャートが機能することが確認された最も低いバージョンのHelmにこの制約を設定します。
+Helmチャートは `Chart.yaml`の`icon`属性を使ってアイコンへのリンクを指定するべきです。アイコン参照を含まないチャートの場合、デフォルトのアイコンがカタログのUIに表示されます。
+画像ファイルを小さくするために、グラフにアイコンファイルを直接含めるのではなく、パブリック・インターネット上のアイコンへのリンクを含めることをお勧めします。Helmチャートの最大サイズは1MBです。個々のチャートがその制限に近づくことはありませんが、ユーザはチャートをサブ・チャートとして含むチャートを作成することがあるため、外部リンクを使用することをお勧めします。
+アイコンがGitHubファイルでホストされている`.svg`の場合、ICP UIで正しく表示するためにURLの最後に`？sanitize = true`を追加してください。例えば以下のように記述します。
+```
+icon: https://raw.githubusercontent.com/ot4i/ace-helm/master/appconnect_enterprise_logo.svg?sanitize=true
+```
 
-##デプロイ検証
+### チャートのキーワード
+ChartキーワードはIBM Cloud Privateユーザー・インターフェースによって使用されますので、Chart.yamlに含むことが望ましいです。チャートがIBM Cloud Privateでの使用を意図していることを示すためにキーワード`ICP`を使用し、チャートがIBM Cloud Kubernetesサービスでの使用を意図していることを示すためにキーワード`IKS`を使用します。チャートは、`s390x`、` ppc64le`、そして `amd64`のセットから、そのちゃーとサポートするハードウェア・アーキテクチャを示すための1つ以上のキーワードも含むべきです。
 
-チャートをIBM Communityのチャートリポジトリに追加するプルリクエストを作成する前に、チャートの所有者は、IBM Cloud PrivateのユーザーインターフェイスとHelmコマンドラインの両方を使用して、チャートが最新バージョンのIBM Cloud Privateに正しくデプロイされることを確認する必要があります。さらに、チャートでは動作しないことがわかっているIBM Cloud Privateのバージョンがある場合は、それらの詳細をREADME.mdの「制限事項」などのセクションに明確に指定する必要があります。例： `このチャートはIBM Cloud Privateバージョン3.1.0以上でのみサポートされています。
-[Vagrantを使用してIBM Cloud Privateをデプロイする](https://github.com/IBM/deploy-ibm-cloud-private/blob/master/docs/deploy-vagrant.md)自分の環境を確認するための環境を素早く立ち上げることができます。チャート。
-
-＆nbsp;
-
-#推奨チャート機能
-
-このセクションには、プラットフォームによって提供される機能とサービスを利用することによって、エンドユーザーにIBM Cloud Privateの付加価値を提供する提案のリストが含まれています。これらはIBM Communityチャートリポジトリへの投稿には必要ありませんが、それらを実装することを強くお勧めします。それらがIBMによって開発されたチャートで提供されるものと同様の拡張されたエクスペリエンスを提供するためです。
-
-##チャートアイコン
-
-ヘルムチャートは `Chart.yaml`の` icon`属性を使ってアイコンへのリンクを指定するべきです。アイコン参照を含まないチャートの場合、デフォルトのアイコンがカタログのUIに表示されます。
-グラフファイルを小さくするために、グラフにアイコンファイルを直接含めるのではなく、公衆インターネット上のアイコンへのリンクを含めることをお勧めします。ヘルムチャートの最大サイズは1MBです。個々のチャートがその制限に近づくことはありませんが、ユーザはチャートをサブチャートとして含むチャートを作成することがあるため、外部リンクを使用することをお勧めします。
-アイコンがGitHubファイルでホストされている `.svg`の場合、ICP UIで正しく表示するためにURLの最後に`？sanitize = true`を追加してください。例えば：
-
-`` `
-アイコン：https://raw.githubusercontent.com/ot4i/ace-helm/master/appconnect_enterprise_logo.svg?sanitize=true
-`` `
-
-##チャートのキーワード
-
-ChartキーワードはIBM Cloud Privateユーザーインターフェースによって使用され、Chart.yamlに含まれるべきです。チャートがIBM Cloud Privateでの使用を意図していることを示すためにキーワード「ICP」を使用し、チャートがIBM Cloud Kubernetesサービスでの使用を意図していることを示すためにキーワード「IKS」を使用します。チャートは、 `s390x`、` ppc64le`、そして `amd64`のセットから、それがサポートするハードウェアアーキテクチャを示すための1つ以上のキーワードも含むべきです。
 
 | **ラベル：** | **キーワード** |
-| --- | --- |
-| AIとワトソン： 「ワトソン、AI」|
-|ブロックチェーン：ブロックチェーン
-|ビジネスオートメーション： `businessrules`、` Automation` |
-|データ： |データベース
-|データサイエンス＆分析：データサイエンス、アナリティクス|
-| DevOps： 「DevOps」、「deploy」、「Development」、「IDE」、「Pipeline」、「ci」、「build」|
-| IoT： `IoT` |
-|操作：操作|
-|統合： `統合`、 `メッセージキュー` |
-|ネットワーク：ネットワーク
-|ランタイムとフレームワーク： `runtime`、` framework` |
-|ストレージ：ストレージ
-|セキュリティ：セキュリティ
-|ツール：ツール
+| ------- | ------- |
+|AIとワトソン： `watson`, `AI`|
+|ブロックチェーン：`blockchain`|
+|ビジネス・オートメーション： `businessrules`, `Automation` |
+|データ：| `datebase`|
+|データサイエンス＆分析：|`Data Science`, `Analytics`|
+|DevOps：|`DevOps`, `deploy`,`Development`,`IDE`,`Pipeline`,`ci`,`build`|
+|IoT：| `IoT`|
+|操作：|`Operations`|
+|統合：|`Integrations`,`message queue`|
+|ネットワーク：｜`network`|
+|ランタイムとフレームワーク：|`runtime`,` framework`|
+|ストレージ：| `Storage`|
+|セキュリティ：|`Security`|
+|ツール：|`Tools`|
 
-##チャートバージョン/イメージバージョン
+### チャート・バージョン/イメージ・バージョン
 
 ワークロードは、チャートのバージョンとは別にイメージのバージョン/タグを管理する必要があります。
 
-##イメージ
+### イメージ
 
-画像URLはvalues.yamlへのパラメータ化された参照であるべきであり、そして展開されるべき画像のバージョンはデフォルトとして最新バージョンで公開されるべきであり、デフォルトで公に利用可能な画像を参照するべきです。
+イメージURLはvalues.yamlへのパラメータ化された参照できるべきです。そしてデプロイされるイメージは、デフォルトでパブリックで利用可能なイメージを参照するべきで、バージョンはデフォルト最新バージョンで公開されるべきです。
 
-##マルチプラットフォームサポート
+### マルチプラット・フォームサポート
+IBM Cloud Privateは、x86-64、ppc64le、およびz(s390)ハードウェア・アーキテクチャーをサポートしています。ワークロードは、3つのプラットフォームすべてにイメージを提供し、Fat Manifest を使用することによって、可能な限り多くのユーザーに到達できます。
 
-IBM Cloud Privateは、x86-64、ppc64le、およびz(s390)ハードウェア・アーキテクチャーをサポートしています。ワークロードは、3つのプラットフォームすべてにイメージを提供し、太い目録を使用することによって、可能な限り多くのユーザーに到達できます。
+ppc64leプラットフォーム用のイメージの開発について詳しくは、[IBM Cloud Private on Power](https://developer.ibm.com/linuxonpower/ibm-cloud-private-on-power/)および[Docker on IBM Power](https://developer.ibm.com/linuxonpower/docker-on-power/)のサイト、[developer.ibm.com](https://developer.ibm.com)を参照してください。
 
-ppc64leプラットフォーム用のイメージの開発について詳しくは、[IBM Cloud Private on Power](https://developer.ibm.com/linuxonpower/ibm-cloud-private-on-power/)および[Docker on IBM Power]を参照してください。システム](https://developer.ibm.com/linuxonpower/docker-on-power/)のサイト[developer.ibm.com](https://developer.ibm.com)
+zプラットフォーム用のイメージの開発について詳しくは、[IBM Systems上のLinux用のIBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/en/linuxonibm/com.ibm.linux.z.ldvd/ldvd_c_docker_image.html)を参照してください。
 
-zプラットフォーム用のイメージの開発について詳しくは、[IBM Systems上のLinux用のIBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/en/linuxonibm/com.ibm.linux.z)を参照してください。 ldvd / ldvd_c_docker_image.html)
+#### Fat Manifest
 
-##脂肪のマニフェスト
+個々のコンテナ・イメージには、特定のアーキテクチャ用にコンパイルされたバイナリが含まれています。`Fat Manifest`と呼ばれる概念を使用して、単一のイメージ参照から複数のアーキテクチャに対応できるようにするマニフェスト・リストを作成できます。Dockerデーモンがそのようなイメージにアクセスすると、現在実行中のプラットフォーム・アーキテクチャと一致するイメージに自動的にリダイレクトされます。
 
-個々のコンテナイメージには、特定のアーキテクチャ用にコンパイルされたバイナリが含まれています。 「ファットマニフェスト」と呼ばれる概念を使用して、単一の画像参照から複数のアーキテクチャに対応できるようにするマニフェストリストを作成できます。 Dockerデーモンがそのようなイメージにアクセスすると、現在実行中のプラットフォームアーキテクチャと一致するイメージに自動的にリダイレクトされます。
+この機能を使用するには、各アーキテクチャのDockerイメージをレジストリにプッシュし、その後にFat Manifestを付ける必要があります。
 
-この機能を使用するには、各アーキテクチャのDockerイメージをレジストリにプッシュし、その後に太い目録を付ける必要があります。
-
-###太ったマニフェストをデプロイする
-
-太いマニフェストをデプロイするための推奨される方法は、docker tooling、すなわちマニフェストサブコマンドを使用することです。まだPRレビュープロセスに入っていますが、マルチアーチイメージを作成して任意のdockerレジストリにプッシュするために簡単に使用できます。
+#### Fat Manifestをデプロイする
+Fat Manifest のデプロイに推奨される方法は、dockerのツール manifest サブコマンドを使用することです。まだPRレビュー・プロセスの段階ですが、マルチ・アーキテクチャ・イメージを作成して任意のdockerレジストリにプッシュするために簡単に使用できます。
 
 docker-cliツールは、さまざまなプラットフォーム用にこちらからダウンロードできます。[https://github.com/clnperez/cli/releases/tag/v0.1](https://github.com/clnperez/cli/releases/tag /v0.1)
 
-たとえば、次の画像名を使って `web-terminal`コンポーネントの太い目録を作るには：
+たとえば、次のイメージ名を使って `web-terminal`コンポーネントの太い目録を作るには：
 
-  -  `mycluster.icp：8500 / default / ibmcom / web-terminal：2.8.1`  - マルチアーチイメージの名前
-  -  `mycluster.icp：8500 / default / ibmcom / web-terminal：2.8.1-x86_64`  -  x86_64イメージの名前
-  -  `mycluster.icp：8500 / default / ibmcom // Web端末：2.8.1-ppc64le`  - 電源イメージの名前
-  -  `mycluster.icp：8500 / default / ibmcom / web-terminal：2.8.1-s390`  -  Zイメージの名前
+  -  `mycluster.icp：8500/default/ibmcom/web-terminal：2.8.1` - マルチアーキテクチャ・イメージの名前
+  -  `mycluster.icp：8500/default/ibmcom/web-terminal：2.8.1-x86_64` - x86_64イメージの名前
+  -  `mycluster.icp：8500/default/ibmcom/web-terminal：2.8.1-ppc64le` - Powerイメージの名前
+  -  `mycluster.icp：8500/default/ibmcom/web-terminal：2.8.1-s390` - zイメージの名前
 
-`` `
-./docker-linux-amd64マニフェスト作成mycluster.icp：8500 /デフォルト/ ibmcom / web-terminal：2.8.1 mycluster.icp：8500 /デフォルト/ ibmcom / web-terminal：2.8.1-86_64 mycluster.icp：8500 /default/ibmcom/web-terminal:2.8.1-ppc64le mycluster.icp：8500 / default / ibmcom / web-terminal：2.8.1-s390x
-./docker-linux-amd64マニフェスト注釈mycluster.icp：8500 /デフォルト/ ibmcom / web-terminal：2.8.1 mycluster.icp：8500 /デフォルト/ ibmcom / web-terminal：2.8.1-x86_64 --os linux  - -arch amd64
-./docker-linux-amd64マニフェスト注釈mycluster.icp：8500 /デフォルト/ ibmcom / web-terminal：2.8.1 mycluster.icp：8500 /デフォルト/ ibmcom / web-terminal：2.8.1-ppc64le --os linux  - -arch ppc64le
-./docker-linux-amd64マニフェスト注釈mycluster.icp：8500 /デフォルト/ ibmcom / web-terminal：2.8.1 mycluster.icp：8500 /デフォルト/ s390x / web-terminal：2.8.1-s390x --os linux  - -arch s390x
-./docker-linux-amd64マニフェスト検査mycluster.icp：8500 / default / ibmcom / web-terminal：2.8.1
-./docker-linux-amd64マニフェスト・プッシュmycluster.icp：8500 / default / ibmcom / web-terminal：2.8.1
-`` `
+```
+./docker-linux-amd64 manifest create mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-86_64 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-ppc64le mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-s390x
+./docker-linux-amd64 manifest annotate mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-x86_64 --os linux --arch amd64
+./docker-linux-amd64 manifest annotate mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-ppc64le --os linux --arch ppc64le
+./docker-linux-amd64 manifest annotate mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/s390x/web-terminal:2.8.1-s390x --os linux --arch s390x
+./docker-linux-amd64 manifest inspect mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1
+./docker-linux-amd64 manifest push mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1
+```
 
-**注意：**マルチアーチイメージをレジストリにプッシュしても、イメージレイヤーはプッシュされません。アクセス可能な画像へのポインタのリストをプッシュするだけです。これが、マルチアーチ画像を実際のもの、つまりマニフェストリストと考える方がよい理由です。さらに、ファットマニフェストを作成するときは、プラットフォーム固有のDockerイメージがすべてレジストリに事前にインポートされていることを確認する必要があります。そうしないと、ターゲットイメージと異なるレジストリのソースイメージを使用できないというエラーが表示されます。 ！= mycluster.icp：8500`。
+**注：**マルチ・アーキテクチャ・イメージをレジストリにプッシュしても、イメージ・レイヤーはプッシュされません。アクセス可能なイメージへのポインタのリストをプッシュするだけです。これが、マルチ・アーキテクチャ・イメージを"マニフェスト・スト" と考える方がよい理由です。さらに、Fat Manifestを作成するときは、各プラットフォーム固有のDockerイメージがすべてレジストリに事前にインポートされていることを確認する必要があります。そうしないと、以下のようなターゲットイメージと異なるレジストリのソースイメージを使用できないというエラーが表示されます。<br>
+`cannot use source images from a different registry than the target image: docker.io != mycluster.icp:8500` <br>
 
-マニフェストリストをレジストリにプッシュした後は、以前イメージ名を使用していたときと同じように使用します。
+マニフェストリストをレジストリにプッシュした後は、以前イメージ名を使用していたときと同じように利用できます。
 
-**注：**マニフェストリストのローカルコピーを保持したい場合は、-purgeフラグを削除してください。忘れた場合、 `manifest inspect`はレジストリのコピーではなくローカルのコピーを返すので、これを使うことをお勧めします。
+**注：**マニフェストリストのローカルコピーを保持したい場合は、-purgeフラグを削除してください。`manifest inspect`はレジストリのコピーではなくローカルのコピーを返すので、混乱を招く可能性があります。
 
-## initコンテナの定義
-
+#### initコンテナの定義
 [init container](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)は、アプリケーションコンテナと一緒にパッケージ化したくないユーティリティをパッケージ化するなど、さまざまな理由で役に立ちます。あるいは、すべてのコンテナーを並行して開始するべきではないワークロードのための開始順序ロジックを含めるため。
 
 initコンテナを使用している場合、kubernetesのドキュメントで説明されているように、それらを記述するために `annotations`の代わりに` spec`構文を使用してください。注釈はKubernetes 1.6と1.7では非推奨となり、Kubernetes 1.8ではサポートされなくなりました。
