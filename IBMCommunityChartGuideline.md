@@ -72,7 +72,7 @@ IBM Communityチャートリポジトリへの貢献に関するルールは、G
 | [チャートのバージョン/イメージのバージョン](#chart-version-image-version)|ワークロードは、チャートのバージョンとは別に、イメージのバージョン/タグを管理する必要があります。 |
 | [イメージ](#image)|画像URLをパラメータ化し、展開する画像のバージョンをデフォルトとして最新バージョンで公開する必要があります。可能であれば、デフォルトで公開されている画像を参照してください。 |
 | [マルチプラットフォームサポート](#multi-platform-support)| IBM Cloud Privateは、x86-64、Power、およびzハードウェア・アーキテクチャーをサポートしています。ワークロードは、3つのプラットフォームすべてにイメージを提供し、fat manifestを使用することによって、可能な限り多くのユーザーに到達できます。 |
-| [Initコンテナー定義](#init-container-definitions)| [initコンテナ](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)を使用する場合は、それらを記述するために `spec` syntax vs` annotations`を使用してください。これらのアノテーションはKubernetes 1.6と1.7では非推奨となり、Kubernetes 1.8ではサポートされなくなりました。 |
+| [Initコンテナー定義](#init-container-definitions)| [initコンテナ](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)を使用する場合は、それらを記述するために`annotations`ではなく`spec`構文を使用してください。これらのアノテーションはKubernetes 1.6と1.7では非推奨となり、Kubernetes 1.8ではサポートされなくなりました。 |
 | [ノード・アフィニティ](#node-affinity)| IBMは、ワークロードが異種クラスター内の有効なプラットフォーム上でスケジュールされるようにするために `nodeAffinity`を使用することをお勧めします。
 | [ストレージ(PersistentVolume/Claim)](#storage-persistent-volumes-claim)| チャートにPersistent Volumeを作成しないでください 割り当ては環境固有であり、チャートのデプロイ担当者には許可されていないこともあります。永続的ストレージが必要な場合は、チャートに永続的ボリューム要求 (Persitent Volume Claim) を含める必要があります。 |
 | [パラメータのグループ化と命名](#パラメータのグループ化と命名)|チャート全体で一貫したパラメーターとユーザーエクスペリエンスを提供するには、共通の命名規則(オンボーディングガイドに概説)を使用してください。 |
@@ -216,58 +216,58 @@ docker-cliツールは、さまざまなプラットフォーム用にこちら�
 ./docker-linux-amd64 manifest push mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1
 ```
 
-**注：**マルチ・アーキテクチャ・イメージをレジストリにプッシュしても、イメージ・レイヤーはプッシュされません。アクセス可能なイメージへのポインタのリストをプッシュするだけです。これが、マルチ・アーキテクチャ・イメージを"マニフェスト・スト" と考える方がよい理由です。さらに、Fat Manifestを作成するときは、各プラットフォーム固有のDockerイメージがすべてレジストリに事前にインポートされていることを確認する必要があります。そうしないと、以下のようなターゲットイメージと異なるレジストリのソースイメージを使用できないというエラーが表示されます。<br>
+**注意** 
+マルチ・アーキテクチャ・イメージをレジストリにプッシュしても、イメージ・レイヤーはプッシュされません。アクセス可能なイメージへのポインタのリストをプッシュするだけです。これが、マルチ・アーキテクチャ・イメージを"マニフェスト・スト" と考える方がよい理由です。さらに、Fat Manifestを作成するときは、各プラットフォーム固有のDockerイメージがすべてレジストリに事前にインポートされていることを確認する必要があります。そうしないと、以下のようなターゲットイメージと異なるレジストリのソースイメージを使用できないというエラーが表示されます。<br>
 `cannot use source images from a different registry than the target image: docker.io != mycluster.icp:8500` <br>
 
 マニフェストリストをレジストリにプッシュした後は、以前イメージ名を使用していたときと同じように利用できます。
 
-**注：**マニフェストリストのローカルコピーを保持したい場合は、-purgeフラグを削除してください。`manifest inspect`はレジストリのコピーではなくローカルのコピーを返すので、混乱を招く可能性があります。
+**注意** 
+マニフェストリストのローカルコピーを保持したい場合は、-purgeフラグを削除してください。`manifest inspect`はレジストリのコピーではなくローカルのコピーを返すので、混乱を招く可能性があります。
 
 #### initコンテナの定義
-[init container](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)は、アプリケーションコンテナと一緒にパッケージ化したくないユーティリティをパッケージ化するなど、さまざまな理由で役に立ちます。あるいは、すべてのコンテナーを並行して開始するべきではないワークロードのための開始順序ロジックを含めるため。
+[init container](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)は、アプリケーション・コンテナと一緒にパッケージ化したくないユーティリティをパッケージ化するなど、さまざまな理由で役に立ちます。あるいは、すべてのコンテナーを並行して開始するべきではないワークロードのための開始順序ロジックを含めるためにもりようできます。
 
-initコンテナを使用している場合、kubernetesのドキュメントで説明されているように、それらを記述するために `annotations`の代わりに` spec`構文を使用してください。注釈はKubernetes 1.6と1.7では非推奨となり、Kubernetes 1.8ではサポートされなくなりました。
+initコンテナを使用している場合、kubernetesのドキュメントで説明されているように、それらを記述するために `annotations`の代わりに`spec`構文を使用してください。これらの`annotations` はKubernetes 1.6と1.7では非推奨となり、Kubernetes 1.8ではサポートされなくなりました。
 
-##ノードアフィニティ
+#### ノード・アフィニティ
+IBMは、[nodeAffinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity-beta-feature)を使用して、妥当なプラットフォームにチャートのインストールがされるようにします。
+ノード・アフィニティは、そのアーキテクチャに基づいて、ポッドが実行されるノードを制限する機能を提供します。異種クラスタでは、特定のハードウェア・アーキテクチャを持つノードでのみ特定のワークロードを実行するかどうかをユーザーが選択できます。
+IBMは`arch`パラメーターを`values.yaml`に追加し、そのパラメーターを参照してポッドに`nodeAffinity`を設定することをお勧めします。サンプルとして、[ibm-odm-dev](https://github.com/IBM/charts/blob/master/stable/ibm-odm-dev/templates/deployment.yaml) を見てください。
 
-IBMは、[nodeAffinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity-beta-feature)を使用して有効なプラットフォームにチャートのインストールをスケジュールすることをお勧めします。
+#### ストレージ (Persitent Volume / Persistent Volume Claim)
+リソースの割り当ては環境固有であり、チャートのデプロイメント担当者には許可されていないこともあるため、チャート内にPersistentVolume定義を作成することはお勧めできません。永続的なストレージが必要な場合は、チャートに[kubernetesのドキュメント](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#writing-portable-configuration)に記載されているように、Persistent Volume Claimを含める必要があります。
 
-ノードアフィニティは、そのアーキテクチャに基づいて、ポッドが実行されるノードを制限する機能を提供します。異種クラスタでは、特定のハードウェアアーキテクチャを持つノードでのみ特定のワークロードを実行するかどうかをユーザーが選択できます。
+管理者がデプロイのために事前に作成しなければならない必要な永続ボリュームまたはストレージクラスは、README.mdに明確に文書化されている必要があります。
 
-IBMは[ibm-odm-dev](https://github.com/IBM/charts)に示されているように、 `arch.パラメーターを` values.yaml`に追加し、そのパラメーターを参照してポッドに `nodeAffinity`を設定することをお勧めします。例えば、/ blob / master / stable / ibm-odm-dev / templates / deploy.yaml)chartです。
+##### パラメータのグループ化と命名
+[環境変数に関するHelmベストプラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md)には、[命名規則](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md#naming-conventions)、[使用方法(マップではなく配列)](https://github.com/helm/helm/blob/master/docs/chart_best_practices/values.md#consider-how-users-will-use-your-values)、[YAMLフォーマット](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md#flat-or-nested-values)、[タイプの明確化](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md#make-types-clear)のガイドラインが含まれています。 <br>
+以下のガイドラインは、共通の名前、値、およびグループ化を使用することによって、チャート全体で一貫したユーザー・エクスペリエンスを提供するためにこれらを基にしています。複数のインスタンスが存在する場合(例えば、複数のPersistentVolumeClaimが必要な場合、パラメータはpvc1、pvc2、…のようなグループ化トークンの下にネストされるべきです)、ネストされた構造はグループ化を最初のトークンとして定義されます。
 
-##ストレージ(固定ボリューム/クレーム)
-
-割り当ては環境固有であり、チャートの配置担当者には許可されていないため、チャート内に永続的なボリュームを作成することはお勧めできません。永続的なストレージが必要な場合は、チャートに[kubernetesのドキュメント](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#writing-portable-configuration)に記載されているように、Persistent Volume Claimを含める必要があります。
-
-管理者が展開のために事前に作成しなければならない必要な永続ボリュームまたはストレージクラスは、README.mdに明確に文書化されている必要があります。
-
-##パラメータのグループ化と命名
-
-[値に関するHelmベストプラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md)には、[命名規則](https://github.com/kubernetes)のガイドラインが含まれています。 /helm/blob/master/docs/chart_best_practices/values.md#naming-conventions)、[使用方法(マップではなく配列)](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/ values.md#ユーザーが自分の値を使用する方法を検討する)、[YAMLフォーマット](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md#flat-) or-nested-values)、[タイプの明確化](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md#make-types-clear)。以下のガイドラインは、共通の名前、値、およびグループ化を使用することによって、チャート全体で一貫したユーザーエクスペリエンスを提供するためにこれらを基にしています。複数のインスタンスが存在する場合(例えば、複数のPersistentVolumeClaimが必要な場合、パラメータはpvc1、pvc2、…のようなグループ化トークンの下にネストされるべきです)、ネストされた構造はグループ化を最初のトークンとして定義されます。
-
- - パラメータは、ネストされた値が `.`で区切られた1つ以上のトークンで構成されている必要があります。トークンの左から右への読み取りは、一貫して次の順序と名前で行われる必要があります(パラメータが特定のチャートに適用可能な場合)。
-  1.グループ化/命名トークン(複数のインスタンスの場合 - すなわちpvc1、pvc2)
-  修飾子(すなわち持続性)
-  3.パラメータ(有効)
- - チャート全体でグループとして設定されることが多いフィールドには、グローバルパラメータをお勧めします。これにより、チャートを変更せずにサブチャートとして使用できるようになります。一般的な例は `global.image.secretName`で、これが設定されていれば` imagePullSecret`です：
-
-  values.yamlからの抜粋：
-
-  `` `
-        グローバル：
-          画像：
-            secretName：＆quot; docker-secret＆quot;
-  `` `
-
-  ポッドからの抜粋：
-
-  `` `
-        {{ -  if .Values.global.image.secretName}}
-        imagePullSecrets：
-           - 名前：{{.Values.global.image.secretName}}
-        {{- 終わり }}
-  ```
+  * パラメータは、ネストされた値が`.`で区切られた1つ以上のトークンで構成されている必要があります。<br>
+    トークンの左から右への読み取りは、一貫して次の順序と名前で行われる必要があります(パラメータが特定のチャートに適用可能な場合)。
+    1. グループ化/命名トークン(複数のインスタンスの場合 - すなわちpvc1、pvc2)
+    1. 修飾子(たとえば persistence)
+    1. パラメータ(たとえば enabled)
+    <br>
+    values.yamlからの抜粋：
+      ```
+         global:
+            image:
+              secretName: "docker-secret"
+      ```
+ 
+  * チャート全体でグループとして設定されることが多いフィールドには、グローバル・パラメータをお勧めします。<br>
+    これにより、チャートを変更せずにサブチャートとして使用できるようになります。
+    一般的な例は `global.image.secretName`で、`imagePullSecret`などで利用されます。
+    <br>
+    ポッド定義からの抜粋：
+      ```
+            {{ -  if .Values.global.image.secretName}}
+            imagePullSecrets：
+               - name：{{.Values.global.image.secretName}}
+            {{- end }}
+      ```
 共通のIBM Cloud Privateパラメーター
 
 | **パラメータ** | **定義** | **値** |
