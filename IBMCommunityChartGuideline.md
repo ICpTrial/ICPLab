@@ -200,14 +200,14 @@ zプラットフォーム用のイメージの開発について詳しくは、[
         -  `mycluster.icp：8500/default/ibmcom/web-terminal：2.8.1-ppc64le` - Powerイメージの名前
         -  `mycluster.icp：8500/default/ibmcom/web-terminal：2.8.1-s390` - zイメージの名前
 
-      ```
-      ./docker-linux-amd64 manifest create mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-86_64 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-ppc64le mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-s390x
-      ./docker-linux-amd64 manifest annotate mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-x86_64 --os linux --arch amd64
-      ./docker-linux-amd64 manifest annotate mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-ppc64le --os linux --arch ppc64le
-      ./docker-linux-amd64 manifest annotate mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/s390x/web-terminal:2.8.1-s390x --os linux --arch s390x
-      ./docker-linux-amd64 manifest inspect mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1
-      ./docker-linux-amd64 manifest push mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1
-      ```
+   ```
+   ./docker-linux-amd64 manifest create mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-86_64 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-ppc64le mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-s390x
+   ./docker-linux-amd64 manifest annotate mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-x86_64 --os linux --arch amd64
+   ./docker-linux-amd64 manifest annotate mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-ppc64le --os linux --arch ppc64le
+   ./docker-linux-amd64 manifest annotate mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/s390x/web-terminal:2.8.1-s390x --os linux --arch s390x
+   ./docker-linux-amd64 manifest inspect mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1
+   ./docker-linux-amd64 manifest push mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1
+   ```
 
    **注意** 
    マルチ・アーキテクチャ・イメージをレジストリにプッシュしても、イメージ・レイヤーはプッシュされません。アクセス可能なイメージへのポインタのリストをプッシュするだけです。これが、マルチ・アーキテクチャ・イメージを"マニフェスト・スト" と考える方がよい理由です。さらに、Fat Manifestを作成するときは、各プラットフォーム固有のDockerイメージがすべてレジストリに事前にインポートされていることを確認する必要があります。そうしないと、以下のようなターゲットイメージと異なるレジストリのソースイメージを使用できないというエラーが表示されます。<br>
@@ -291,7 +291,7 @@ Helmは[ラベルと注釈](https://github.com/kubernetes/helm/blob/master/docs/
 IBMは、チャートで定義されているすべてのKubernetesリソースで、すべてのチャートが"heritage, release, chart and app"」の標準ラベルを使用することをお勧めします。
 
 ### liveneess Prove とreadiness Prove
-
+ワークロードは、livenessProbesとreadinessProbesを使用して自分のヘルスの監視を有効にする必要があります。
   
 ### Kind
 リソースを定義するすべてのhelmテンプレートには`Kind`が必要です。 [Helmベスト・プラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_template_guide/yaml_techniques.md)は、単一のテンプレート・ファイルに複数のリソースを定義しないようにすることです。
