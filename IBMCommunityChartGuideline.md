@@ -38,63 +38,63 @@ IBM Communityチャートリポジトリへの貢献に関するルールは、G
 # チャート投稿のための基準とガイドライン
 
 以下の表は、Helmチャートを `https://github.com/ibm/chart/community`ディレクトリに配信する準備をしている人のための準備ガイドとして使用する必要があります。<br>
-[**表１**](＃表１ https://github.com/ibm.chart に登録すべてのチャートに必要)は、IBM Communityチャート・リポジトリに登録するすべてのチャートに必要な基準の短いリストを含みます。<br>
-[**表２**](＃表２ ibm cloud privateでの改善されたユーザーエクスペリエンスに関する推奨事項) には、ICPのプラットフォームとさらに統合するチャートの作成方法に関するガイダンスが含まれています。IBM Cloud Privateで高品質で一貫したユーザー・エクスペリエンスの提供が可能になります。表2のガイドラインに従うことを推奨しますが、必須ではありません。チャートの各項目には、このページのさらに下にある実装に関する詳細へのリンクがあります。<br>
+[**表１**](#表１ https://github.com/ibm.chart に登録すべてのチャートに必要)は、IBM Communityチャート・リポジトリに登録するすべてのチャートに必要な基準の短いリストを含みます。<br>
+[**表２**](#表２ ibm cloud privateでの改善されたユーザーエクスペリエンスに関する推奨事項) には、ICPのプラットフォームとさらに統合するチャートの作成方法に関するガイダンスが含まれています。IBM Cloud Privateで高品質で一貫したユーザー・エクスペリエンスの提供が可能になります。表2のガイドラインに従うことを推奨しますが、必須ではありません。チャートの各項目には、このページのさらに下にある実装に関する詳細へのリンクがあります。<br>
 
 これらのガイドラインは[Helmベストプラクティス](https://docs.helm.sh/chart_best_practices/) を補強することを目的としており、それらを置き換えるものではありません。下記のガイダンスがない場合は、Helmコミュニティのベスト・プラクティスを参照することをお勧めします。
 
-###表1：https://github.com/ibm/chartsに投稿されたすべてのチャートに必要
+### 表1：https://github.com/ibm/chartsに投稿されたすべてのチャートに必要
 
 | **要件** | **説明** |
 | ------- | ------- |
-| [**ディレクトリ構造**](＃directory-structure)|チャートのソースは `chart/community`ディレクトリに追加されなければなりません。`helm package`を使って`.tgz`ファイルとしてパッケージ化されたチャートアーカイブは、Helmリポジトリである `chart/repo/community`ディレクトリに追加されなければなりません。 *あなたの成果物*でindex.yamlを更新しないでください。index.yamlはビルドプロセスによって自動的に更新されます。|
-| [**チャート名**](＃chart-name)|Helmチャートの名前は[Helmチャートのベストプラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/conventions.md#chart-names) に従う必要があります。チャート名は、チャートを含むディレクトリと同じである必要があります。会社または組織によって提供された図表には、会社または組織の名前を接頭辞として付けることができます。IBMによって提供されたチャートのみに`ibm-`というプレフィックスを付けることができます。|
-| [**チャートファイルの構造**](＃chart-file-structure)|チャートは標準のHelmファイル構造に従う必要があります。Chart.yaml、values.yaml、README.md、templates、templates/NOTES.txt はすべて存在し、有用な内容を持っている必要があります。|
-| [**チャートバージョン**](＃chart-version)| [Helmチャートのベストプラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/conventions.md#version-numbers)に従って、SemVer2ナンバリングを使用し、チャートを更新する必要があります。変更がREADMEファイルのみに対するものでない限り、更新されたバージョン番号を含める必要があります。|
-| [**チャートの説明**](＃chart-description)|提供されたすべてのチャートは、chart.yamlにチャートの説明がなければなりません。これはICPカタログに表示され、意味があるものでなければいけません。|
-| [**チャートのキーワード**](＃chart-keywords)| ChartキーワードはIBM Cloud Privateユーザー・インターフェースによって使用されます。Chart.yamlに含める必要があります。チャートがIBM Cloud Privateでの使用を意図していることを示すためにはキーワード「ICP」を使用し、チャートがIBM Cloud Kubernetesサービスでの使用を意図していることを示すためにはキーワード「IKS」を使用します。チャートには、 `s390x`、` ppc64le`、そして `amd64`のセットから、それがサポートするハードウェア・アーキテクチャを示すための1つ以上のキーワードも含まなければなりません。UIの分類に使用されるオプションのキーワードのリストは、オプションのガイダンスをカバーするセクションに続きます。|
-| [**Helm lint**](＃helm-lint)|チャートはエラーなしで `helm lint`検証ツールに合格しなければなりません。 |
-| [**ライセンス**](＃ライセンス)|チャート自体はApache 2.0ライセンスであり、チャートのルートにあるLICENSEファイルにApache 2.0ライセンスが含まれている必要があります。チャートは、展開されている製品のライセンスなど、追加のライセンスファイルをLICENSESディレクトリにパッケージ化することもできます。 IBM Cloud Privateユーザー・インターフェースを介してデプロイする際には、LICENSEファイルとLICENSESディレクトリー内のファイルの両方が同意のためにユーザーに表示されます。
-| [**README.md**](＃readme-md)|提供されるすべてのチャートには、ユーザがチャートをデプロイするために必要となる有用な情報を含む便利なREADME.mdファイルが含まれている必要があります。 IBM Cloud Private GUIでは、README.mdファイルはカタログのチャートをクリックした後にユーザーに表示される「フロント・ページ」です。すべての入力パラメータの完全な説明と記述を強くお勧めします。また、IBM Cloud Privateの信頼できるイメージ・レジストリのリストにイメージ・レジストリを追加する方法についても説明することを強くお勧めします。 IBM Cloud Private 3.1以降、デフォルトで [コンテナ・イメージ・セキュリティ](https://www.ibm.com/support/knowledgecenter/ja/SSBS6K_3.1.0/manage_images/image_security.html)が有効になります。|
-| [**サポート・ステートメント**](＃support-statement)| README.mdは `Support`とラベルされたセクションを含まなければなりません。このセクションでは、ユーザーが緊急の問題をあげる、支援を受ける、または問題の報告をあげるための詳細およびリンクを提供する必要があります。 |
-| [**NOTES.txt**](＃notes-txt)|使用上の注意、次の手順、関連情報を得るための情報を NOTES.txtを含めます。|
-| [**tillerVersion制約**](＃tillerversion-constraint)| Semantic Versioning 2.0.0フォーマット( `> = MAJOR.MINOR.PATCH`)に従う` tillerVersion`をChart.yamlに追加してください。このバージョン番号に追加のメタデータが添付されていないことを確認してください。このチャートが機能することが確認された最も低いバージョンのHelmにこの制約を設定します。 |
-| [**デプロイメント検証**](＃deployment-validation)|チャートは、Helm CLIとIBM Cloud Private GUIの両方を使用して、IBM Cloud Privateの最新バージョンで正常にデプロイされ、期待どおりに機能するように検証する必要があります。 [Vagrantを使用してIBM Cloud Privateをデプロイする](https://github.com/IBM/deploy-ibm-cloud-private/blob/master/docs/deploy-vagrant.md)チャートを確認するための環境を素早く立ち上げることができます。 |
+| [**ディレクトリ構造**](#directory-structure)|チャートのソースは `chart/community`ディレクトリに追加されなければなりません。`helm package`を使って`.tgz`ファイルとしてパッケージ化されたチャートアーカイブは、Helmリポジトリである `chart/repo/community`ディレクトリに追加されなければなりません。 *あなたの成果物*でindex.yamlを更新しないでください。index.yamlはビルドプロセスによって自動的に更新されます。|
+| [**チャート名**](#chart-name)|Helmチャートの名前は[Helmチャートのベストプラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/conventions.md#chart-names) に従う必要があります。チャート名は、チャートを含むディレクトリと同じである必要があります。会社または組織によって提供された図表には、会社または組織の名前を接頭辞として付けることができます。IBMによって提供されたチャートのみに`ibm-`というプレフィックスを付けることができます。|
+| [**チャートファイルの構造**](#chart-file-structure)|チャートは標準のHelmファイル構造に従う必要があります。Chart.yaml、values.yaml、README.md、templates、templates/NOTES.txt はすべて存在し、有用な内容を持っている必要があります。|
+| [**チャートバージョン**](#chart-version)| [Helmチャートのベストプラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/conventions.md#version-numbers)に従って、SemVer2ナンバリングを使用し、チャートを更新する必要があります。変更がREADMEファイルのみに対するものでない限り、更新されたバージョン番号を含める必要があります。|
+| [**チャートの説明**](#chart-description)|提供されたすべてのチャートは、chart.yamlにチャートの説明がなければなりません。これはICPカタログに表示され、意味があるものでなければいけません。|
+| [**チャートのキーワード**](#chart-keywords)| ChartキーワードはIBM Cloud Privateユーザー・インターフェースによって使用されます。Chart.yamlに含める必要があります。チャートがIBM Cloud Privateでの使用を意図していることを示すためにはキーワード「ICP」を使用し、チャートがIBM Cloud Kubernetesサービスでの使用を意図していることを示すためにはキーワード「IKS」を使用します。チャートには、 `s390x`、` ppc64le`、そして `amd64`のセットから、それがサポートするハードウェア・アーキテクチャを示すための1つ以上のキーワードも含まなければなりません。UIの分類に使用されるオプションのキーワードのリストは、オプションのガイダンスをカバーするセクションに続きます。|
+| [**Helm lint**](#helm-lint)|チャートはエラーなしで `helm lint`検証ツールに合格しなければなりません。 |
+| [**ライセンス**](#license)|チャート自体はApache 2.0ライセンスであり、チャートのルートにあるLICENSEファイルにApache 2.0ライセンスが含まれている必要があります。チャートは、展開されている製品のライセンスなど、追加のライセンスファイルをLICENSESディレクトリにパッケージ化することもできます。 IBM Cloud Privateユーザー・インターフェースを介してデプロイする際には、LICENSEファイルとLICENSESディレクトリー内のファイルの両方が同意のためにユーザーに表示されます。
+| [**README.md**](#readme-md)|提供されるすべてのチャートには、ユーザがチャートをデプロイするために必要となる有用な情報を含む便利なREADME.mdファイルが含まれている必要があります。 IBM Cloud Private GUIでは、README.mdファイルはカタログのチャートをクリックした後にユーザーに表示される「フロント・ページ」です。すべての入力パラメータの完全な説明と記述を強くお勧めします。また、IBM Cloud Privateの信頼できるイメージ・レジストリのリストにイメージ・レジストリを追加する方法についても説明することを強くお勧めします。 IBM Cloud Private 3.1以降、デフォルトで [コンテナ・イメージ・セキュリティ](https://www.ibm.com/support/knowledgecenter/ja/SSBS6K_3.1.0/manage_images/image_security.html)が有効になります。|
+| [**サポート・ステートメント**](#support-statement)| README.mdは `Support`とラベルされたセクションを含まなければなりません。このセクションでは、ユーザーが緊急の問題をあげる、支援を受ける、または問題の報告をあげるための詳細およびリンクを提供する必要があります。 |
+| [**NOTES.txt**](#notes-txt)|使用上の注意、次の手順、関連情報を得るための情報を NOTES.txtを含めます。|
+| [**tillerVersion制約**](#tillerversion-constraint)| Semantic Versioning 2.0.0フォーマット( `> = MAJOR.MINOR.PATCH`)に従う` tillerVersion`をChart.yamlに追加してください。このバージョン番号に追加のメタデータが添付されていないことを確認してください。このチャートが機能することが確認された最も低いバージョンのHelmにこの制約を設定します。 |
+| [**デプロイメント検証**](#deployment-validation)|チャートは、Helm CLIとIBM Cloud Private GUIの両方を使用して、IBM Cloud Privateの最新バージョンで正常にデプロイされ、期待どおりに機能するように検証する必要があります。 [Vagrantを使用してIBM Cloud Privateをデプロイする](https://github.com/IBM/deploy-ibm-cloud-private/blob/master/docs/deploy-vagrant.md)チャートを確認するための環境を素早く立ち上げることができます。 |
 
-###表2：IBM Cloud Privateのユーザーエクスペリエンス向上のための推奨事項
+### 表2：IBM Cloud Private におけるユーザー・エクスペリエンス向上のための推奨事項
 
-次の表には、IBM Cloud Privateでフル機能で一貫したユーザーエクスペリエンスを提供するワークロードを構築する方法に関するIBMからのガイダンスが含まれています。上記の標準とは異なり、IBM Communityチャートリポジトリ内のチャートは、これらの項目を実装するために必須ではありません。チャート開発者は、ベストプラクティス以下の項目を検討し、必要に応じてそれらを使用して、IBM Cloud Privateとのより深い統合を実現し、ユーザーエクスペリエンスを向上させる必要があります。一部の推奨事項は、すべての作業負荷タイプに適用できるわけではありません。
+次の表には、IBM Cloud Private のフル機能で一貫したユーザーエクスペリエンスを提供するワークロードを構築する方法に関するIBMからのガイダンスが含まれています。表１の標準とは異なり、IBM Communityチャート・リポジトリ内のチャートは、これらの項目をすべて実装することは必須ではありません。チャート開発者は、ベスト・プラクティス以下の項目を検討し、必要に応じてそれらを使用して、IBM Cloud Privateとのより深い統合を実現し、ユーザー・エクスペリエンスを向上させることができます。一部の推奨事項は、すべてのワークロード・タイプに適用できるわけではありません。
 
 | **ガイドライン** | **説明** |
-| --- | --- |
-| [チャートアイコン](＃chart-icon)|ネストしたチャートを使用するときのチャートサイズの制限を回避するために、アイコンにURLを提供することは、チャートにローカルアイコンを埋め込むよりも好ましいです。 |
-| [チャートのキーワード](＃chart-keywords-1)|前のセクションで説明した必須キーワードに加えて、オプションのキーワードを使用してチャートをUIによって認識される一連のカテゴリに絞り込むことができます。
-| [チャートのバージョン/画像のバージョン](＃chart-version-image-version)|ワークロードは、チャートのバージョンとは別にイメージのバージョン/タグを管理する必要があります。 |
-| [画像](＃画像)|画像URLをパラメータ化し、展開する画像のバージョンをデフォルトとして最新バージョンで公開する必要があります。可能であれば、デフォルトで公開されている画像を参照してください。 |
-| [マルチプラットフォームサポート](＃multi-platform-support)| IBM Cloud Privateは、x86-64、Power、およびzハードウェア・アーキテクチャーをサポートしています。ワークロードは、3つのプラットフォームすべてにイメージを提供し、太い目録を使用することによって、可能な限り多くのユーザーに到達できます。 |
-| [コンテナ定義の初期化](＃init-container-definitions)| [initコンテナ](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)を使用する場合は、それらを記述するために `spec`構文vs` annotations`を使用してください。これらのアノテーションはKubernetes 1.6と1.7では非推奨となり、Kubernetes 1.8ではサポートされなくなりました。 |
-| [ノードアフィニティ](＃node-affinity)| IBMは、ワークロードが異種クラスター内の有効なプラットフォーム上でスケジュールされるようにするために `nodeAffinity`を使用することをお勧めします。
-| [ストレージ(永続ボリューム/要求)](＃storage-persistent-volumes-claim)|割り当ては環境固有であり、チャートの配置担当者には許可されていないため、チャートに永続的なボリュームを作成しないでください。永続的ストレージが必要な場合は、チャートに永続的ボリューム要求を含める必要があります。 |
-| [パラメータのグループ化と命名](＃パラメータのグループ化と命名)|チャート全体で一貫したパラメーターとユーザーエクスペリエンスを提供するには、共通の命名規則(オンボーディングガイドに概説)を使用してください。 |
-| [値メタデータ](＃values-metadata)| ICP UIで豊富な展開エクスペリエンスを提供するために、パスワード、許可された値などを含むフィールドのメタデータを定義します。メタデータフォーマットは、オンボーディングガイドに記載されています。 |
-| [ラベルと注釈](＃labels-and-annotations)| IBMは、すべてのKubernetesリソースで、すべての図表に「遺産、リリース、図表およびアプリ」という標準ラベルを使用することをお勧めします。 |
-| [活気と即応性プローブ](＃liveness-and-readyiness-probes)|ワークロードは、livenessProbesとreadinessProbesを使用して自分の健康状態を監視する監視を有効にする必要があります。 |
-| [種類](＃種類)|リソースを定義するすべてのHelmテンプレートは `Kind`を持たなければなりません。 Helmはデフォルトでポッドになっていますが、これは避けています。ヘルムのベストプラクティスは、単一のテンプレートファイルに複数のリソースを定義しないことです。 |
-| [コンテナセキュリティ権限](＃container-security-privilege)|可能な限り、ワークロードはコンテナーに対してエスカレートされたセキュリティー特権を使用しないでください。昇格した特権が必要な場合、チャートは目的の機能を実現するために必要な最小レベルの特権を要求する必要があります。 |
-| [Kubernetesセキュリティ特権](＃kubernetes-security-privilege)|チャートは、クラスタ管理者などの管理ロールを持たない通常のユーザが配置できるようにします。昇格した役割が必要な場合は、チャートのREADME.mdに明確に文書化されている必要があります。
-| [hostPathを避ける](＃avoid-hostpath)|堅牢なストレージソリューションではないため、hostPathストレージの使用は避けてください。 |
-| [hostNetworkを避ける](＃avoid-hostnetwork) hostNetworkを使用することは避けてください。コンテナーが共存するのを防ぐためです。 |
-| [ドキュメントリソース使用量](＃document-resoure-usage)|チャートはチャートの `README.md`に文書化されている、それらが消費するリソースについて明確であるべきです。
-| [測光](＃測光)|ユーザーがIBM Cloud Privateメータリングサービスで使用量を測定できるように、チャートにメータリング注釈を含める必要があります。 |
-| [ロギング](＃ロギング)|ワークロード・コンテナーはログをstdoutおよびstderrに書き込む必要があるため、IBM Cloud Privateロギング・サービス(Elasticsearch / Logstash / Kibana)によって自動的に消費されます。また、README.mdに関連するKibanaダッシュボードへのリンクを含めることをお勧めします。ユーザーはそれらをダウンロードしてKibanaにインポートできます。 |
-| [モニタリング](＃モニタリング)|ワークロードはデフォルトのIBM Cloud Privateモニタリングサービス(Prometheus / Grafana)と統合する必要があります。PrometheusメトリックスをKubernetesの「Service」で公開し、そのエンドポイントに注釈を付けてIBM Cloud Privateモニタリングサービスによって自動的に消費されるようにします。 |
-| [ライセンスキーと料金](＃ライセンスキーと料金)|チャートにデプロイまたは他の方法でワークロードを使用するためにライセンスキーが必要な場合は、チャートのREADME.mdの「前提条件」セクションに記載する必要があります。 |
+| -------------- | ------- |
+| [チャート・アイコン](#chart-icon)|ネストしたチャートを使用する際に、チャー・サイズの制限を回避するために、アイコンにURLを利用することは、チャート内にローカル・アイコンを埋め込むよりも好ましいです。 |
+| [チャートのキーワード](#chart-keywords-1)|前のセクションで説明した必須キーワードに加えて、オプションのキーワードを使用して、UIによって認識される一連のカテゴリで絞り込んでチャートを表示できます。
+| [チャートのバージョン/イメージのバージョン](#chart-version-image-version)|ワークロードは、チャートのバージョンとは別に、イメージのバージョン/タグを管理する必要があります。 |
+| [イメージ](#image)|画像URLをパラメータ化し、展開する画像のバージョンをデフォルトとして最新バージョンで公開する必要があります。可能であれば、デフォルトで公開されている画像を参照してください。 |
+| [マルチプラットフォームサポート](#multi-platform-support)| IBM Cloud Privateは、x86-64、Power、およびzハードウェア・アーキテクチャーをサポートしています。ワークロードは、3つのプラットフォームすべてにイメージを提供し、fat manifestを使用することによって、可能な限り多くのユーザーに到達できます。 |
+| [Initコンテナー定義](#init-container-definitions)| [initコンテナ](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)を使用する場合は、それらを記述するために `spec` syntax vs` annotations`を使用してください。これらのアノテーションはKubernetes 1.6と1.7では非推奨となり、Kubernetes 1.8ではサポートされなくなりました。 |
+| [ノード・アフィニティ](#node-affinity)| IBMは、ワークロードが異種クラスター内の有効なプラットフォーム上でスケジュールされるようにするために `nodeAffinity`を使用することをお勧めします。
+| [ストレージ(PersistentVolume/Claim)](#storage-persistent-volumes-claim)| チャートにPersistent Volumeを作成しないでください 割り当ては環境固有であり、チャートのデプロイ担当者には許可されていないこともあります。永続的ストレージが必要な場合は、チャートに永続的ボリューム要求 (Persitent Volume Claim) を含める必要があります。 |
+| [パラメータのグループ化と命名](#パラメータのグループ化と命名)|チャート全体で一貫したパラメーターとユーザーエクスペリエンスを提供するには、共通の命名規則(オンボーディングガイドに概説)を使用してください。 |
+| [Valuesメタデータ](#values-metadata)| ICP UIで優れたデプロイメント・エクスペリエンスを提供するために、パスワード、許可された値などを含むフィールドのメタデータを定義します。メタデータフォーマットは、オンボーディングガイドに記載されています。 |
+| [ラベルと注釈](#labels-and-annotations)| IBMは、すべてのKubernetesリソースで、すべてのに「heritage, release, chart, app」という標準ラベルを利用することをお勧めします。 |
+| [liveness ProbesとreadinessProve即応性プローブ](#liveness-and-readiness-probes)|ワークロードは、livenessProbesとreadinessProbesを使用して自分のヘルスの監視を有効にする必要があります。 |
+| [Kind](# Kind)|リソースを定義するすべてのHelmテンプレートは`Kind`を持たなければなりません。 Helmはデフォルトでポッドになっていますが、我々はこれを避けています。Helmのベストプラクティスは、単一のtemplateファイルに複数リソースを定義しないことです。|
+| [コンテナ・セキュリティ権限](#container-security-privilege)|可能な限り、ワークロードはコンテナーに対して昇格したセキュリティー特権を使用しないでください。チャートに昇格した特権が必要な場合、目的の機能を実現するために必要な最小レベルの特権を要求する必要があります。 |
+| [Kubernetesセキュリティ特権](#kubernetes-security-privilege)|チャートは、クラスタ管理者などの管理ロールを持たない通常のユーザがデプロイできるようにします。昇格した役割が必要な場合は、チャートのREADME.mdに明確にドキュメントされている必要があります。|
+| [hostPathを避ける](#avoid-hostpath)|堅牢なストレージ・ソリューションではないため、hostPathストレージの使用は避けてください。 |
+| [hostNetworkを避ける](#avoid-hostnetwork) hostNetworkを使用することは避けてください。コンテナーが共存することができなくなります。 |
+| [ドキュメントリソース使用量](#document-resoure-usage)|チャートは消費するリソースについて明確であり、チャートの`README.md`に文書化するべきです。|
+| [メータリング](#metering)|ユーザーがIBM Cloud Privateメータリングサービスで使用量を測定できるように、チャートにメータリング・アノテーションを含める必要があります。 |
+| [ロギング](#logging)|ワークロード・コンテナーはログをstdoutおよびstderrに書き出すべきです。これにより、IBM Cloud Privateロギング・サービス(Elasticsearch / Logstash / Kibana)によって自動的に管理されます。また、README.mdに関連するKibanaダッシュボードへのリンクを含めることをお勧めします。ユーザーはそれらをダウンロードしてKibanaにインポートできます。 |
+| [モニタリング](#モニタリング)|ワークロードはデフォルトのIBM Cloud Privateモニタリング・サービス(Prometheus/Grafana)と統合する必要があります。PrometheusメトリックスをKubernetesの`Service`で公開し、そのエンドポイントにアノテーションを付けてIBM Cloud Privateモニタリング・サービスによって自動的に管理されるようにします。 |
+| [ライセンスキーと料金](#ライセンスキーと料金)|ワークロードをデプロイするために、または他の方法でワークロードを使用するために、ライセンス・キーが必要な場合は、チャートのREADME.mdの「前提条件」セクションに記載する必要があります。 |
 
-＃詳細なガイダンス
 
+#詳細なガイダンス
 -------------------------------------
 
-＃チャートの要件
+#チャートの要件
 
 このセクションには、[GUIDELINES.md](https://github.com/IBM/charts/blob/master/GUIDELINES.md)で概説されているように、IBM Communityチャートに貢献するすべてのチャートが従うべき標準のリストが含まれています。 。チャートは、Helmコミュニティから公開されている[Helmベストプラクティス](https://docs.helm.sh/chart_best_practices/)に準拠していることが期待されます。ここでは再現しません。
 
@@ -157,7 +157,7 @@ Semantic Versioning 2.0.0フォーマット(\＆gt; = MAJOR.MINOR.PATCH)に従�
 
 ＆nbsp;
 
-＃推奨チャート機能
+#推奨チャート機能
 
 このセクションには、プラットフォームによって提供される機能とサービスを利用することによって、エンドユーザーにIBM Cloud Privateの付加価値を提供する提案のリストが含まれています。これらはIBM Communityチャートリポジトリへの投稿には必要ありませんが、それらを実装することを強くお勧めします。それらがIBMによって開発されたチャートで提供されるものと同様の拡張されたエクスペリエンスを提供するためです。
 
@@ -264,7 +264,7 @@ IBMは[ibm-odm-dev](https://github.com/IBM/charts)に示されているように
 
 ##パラメータのグループ化と命名
 
-[値に関するHelmベストプラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md)には、[命名規則](https://github.com/kubernetes)のガイドラインが含まれています。 /helm/blob/master/docs/chart_best_practices/values.md#naming-conventions)、[使用方法(マップではなく配列)](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/ values.md＃ユーザーが自分の値を使用する方法を検討する)、[YAMLフォーマット](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md#flat-) or-nested-values)、[タイプの明確化](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md#make-types-clear)。以下のガイドラインは、共通の名前、値、およびグループ化を使用することによって、チャート全体で一貫したユーザーエクスペリエンスを提供するためにこれらを基にしています。複数のインスタンスが存在する場合(例えば、複数のPersistentVolumeClaimが必要な場合、パラメータはpvc1、pvc2、…のようなグループ化トークンの下にネストされるべきです)、ネストされた構造はグループ化を最初のトークンとして定義されます。
+[値に関するHelmベストプラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md)には、[命名規則](https://github.com/kubernetes)のガイドラインが含まれています。 /helm/blob/master/docs/chart_best_practices/values.md#naming-conventions)、[使用方法(マップではなく配列)](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/ values.md#ユーザーが自分の値を使用する方法を検討する)、[YAMLフォーマット](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md#flat-) or-nested-values)、[タイプの明確化](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md#make-types-clear)。以下のガイドラインは、共通の名前、値、およびグループ化を使用することによって、チャート全体で一貫したユーザーエクスペリエンスを提供するためにこれらを基にしています。複数のインスタンスが存在する場合(例えば、複数のPersistentVolumeClaimが必要な場合、パラメータはpvc1、pvc2、…のようなグループ化トークンの下にネストされるべきです)、ネストされた構造はグループ化を最初のトークンとして定義されます。
 
  - パラメータは、ネストされた値が `.`で区切られた1つ以上のトークンで構成されている必要があります。トークンの左から右への読み取りは、一貫して次の順序と名前で行われる必要があります(パラメータが特定のチャートに適用可能な場合)。
   1.グループ化/命名トークン(複数のインスタンスの場合 - すなわちpvc1、pvc2)
