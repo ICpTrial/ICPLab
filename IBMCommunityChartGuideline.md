@@ -141,11 +141,9 @@ Semantic Versioning 2.0.0フォーマット（ MAJOR.MINOR.PATCH）に従うtill
 
 
 ## 推奨チャート機能
-
 このセクションには、プラットフォームによって提供される機能とサービスを利用することによって、エンドユーザーにIBM Cloud Privateの付加価値を提供する提案のリストが含まれています。これらはIBM Communityチャートリポジトリへの登録には必要ありませんが、それらを実装することを強くお勧めします。それらがIBMによって開発されたチャートで提供されるものと同様の拡張されたエクスペリエンスを提供するためです。
 
 ### チャート・アイコン
-
 Helmチャートは `Chart.yaml`の`icon`属性を使ってアイコンへのリンクを指定するべきです。アイコン参照を含まないチャートの場合、デフォルトのアイコンがカタログのUIに表示されます。
 画像ファイルを小さくするために、グラフにアイコンファイルを直接含めるのではなく、パブリック・インターネット上のアイコンへのリンクを含めることをお勧めします。Helmチャートの最大サイズは1MBです。個々のチャートがその制限に近づくことはありませんが、ユーザはチャートをサブ・チャートとして含むチャートを作成することがあるため、外部リンクを使用することをお勧めします。
 アイコンがGitHubファイルでホストされている`.svg`の場合、ICP UIで正しく表示するためにURLの最後に`？sanitize = true`を追加してください。例えば以下のように記述します。
@@ -156,30 +154,27 @@ icon: https://raw.githubusercontent.com/ot4i/ace-helm/master/appconnect_enterpri
 ### チャートのキーワード
 ChartキーワードはIBM Cloud Privateユーザー・インターフェースによって使用されますので、Chart.yamlに含むことが望ましいです。チャートがIBM Cloud Privateでの使用を意図していることを示すためにキーワード`ICP`を使用し、チャートがIBM Cloud Kubernetesサービスでの使用を意図していることを示すためにキーワード`IKS`を使用します。チャートは、`s390x`、` ppc64le`、そして `amd64`のセットから、そのちゃーとサポートするハードウェア・アーキテクチャを示すための1つ以上のキーワードも含むべきです。
 
-
 | **ラベル：** | **キーワード** |
 | ------- | ------- |
-|AIとワトソン： `watson`, `AI`|
-|ブロックチェーン：`blockchain`|
-|ビジネス・オートメーション： `businessrules`, `Automation` |
-|データ：| `datebase`|
+|AIとワトソン：|`watson`, `AI`|
+|ブロックチェーン：|`blockchain`|
+|ビジネス・オートメーション：|`businessrules`, `Automation` |
+|データ：|`datebase`|
 |データサイエンス＆分析：|`Data Science`, `Analytics`|
 |DevOps：|`DevOps`, `deploy`,`Development`,`IDE`,`Pipeline`,`ci`,`build`|
-|IoT：| `IoT`|
+|IoT：|`IoT`|
 |操作：|`Operations`|
 |統合：|`Integrations`,`message queue`|
-|ネットワーク：｜`network`|
+|ネットワーク：|`network`|
 |ランタイムとフレームワーク：|`runtime`,` framework`|
-|ストレージ：| `Storage`|
+|ストレージ：|`Storage`|
 |セキュリティ：|`Security`|
 |ツール：|`Tools`|
 
 ### チャート・バージョン/イメージ・バージョン
-
 ワークロードは、チャートのバージョンとは別にイメージのバージョン/タグを管理する必要があります。
 
 ### イメージ
-
 イメージURLはvalues.yamlへのパラメータ化された参照できるべきです。そしてデプロイされるイメージは、デフォルトでパブリックで利用可能なイメージを参照するべきで、バージョンはデフォルト最新バージョンで公開されるべきです。
 
 ### マルチプラット・フォームサポート
@@ -189,66 +184,64 @@ ppc64leプラットフォーム用のイメージの開発について詳しく�
 
 zプラットフォーム用のイメージの開発について詳しくは、[IBM Systems上のLinux用のIBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/en/linuxonibm/com.ibm.linux.z.ldvd/ldvd_c_docker_image.html)を参照してください。
 
-#### Fat Manifest
+   #### Fat Manifest
+   個々のコンテナ・イメージには、特定のアーキテクチャ用にコンパイルされたバイナリが含まれています。`Fat Manifest`と呼ばれる概念を使用して、単一のイメージ参照から複数のアーキテクチャに対応できるようにするマニフェスト・リストを作成できます。Dockerデーモンがそのようなイメージにアクセスすると、現在実行中のプラットフォーム・アーキテクチャと一致するイメージに自動的にリダイレクトされます。
 
-個々のコンテナ・イメージには、特定のアーキテクチャ用にコンパイルされたバイナリが含まれています。`Fat Manifest`と呼ばれる概念を使用して、単一のイメージ参照から複数のアーキテクチャに対応できるようにするマニフェスト・リストを作成できます。Dockerデーモンがそのようなイメージにアクセスすると、現在実行中のプラットフォーム・アーキテクチャと一致するイメージに自動的にリダイレクトされます。
+   この機能を使用するには、各アーキテクチャのDockerイメージをレジストリにプッシュし、その後にFat Manifestを付ける必要があります。
 
-この機能を使用するには、各アーキテクチャのDockerイメージをレジストリにプッシュし、その後にFat Manifestを付ける必要があります。
+   #### Fat Manifestをデプロイする
+   Fat Manifest のデプロイに推奨される方法は、dockerのツール manifest サブコマンドを使用することです。まだPRレビュー・プロセスの段階ですが、マルチ・アーキテクチャ・イメージを作成して任意のdockerレジストリにプッシュするために簡単に使用できます。
 
-#### Fat Manifestをデプロイする
-Fat Manifest のデプロイに推奨される方法は、dockerのツール manifest サブコマンドを使用することです。まだPRレビュー・プロセスの段階ですが、マルチ・アーキテクチャ・イメージを作成して任意のdockerレジストリにプッシュするために簡単に使用できます。
+   docker-cliツールは、さまざまなプラットフォーム用にこちらからダウンロードできます。[https://github.com/clnperez/cli/releases/tag/v0.1](https://github.com/clnperez/cli/releases/tag /v0.1)
 
-docker-cliツールは、さまざまなプラットフォーム用にこちらからダウンロードできます。[https://github.com/clnperez/cli/releases/tag/v0.1](https://github.com/clnperez/cli/releases/tag /v0.1)
+   たとえば、次のイメージ名を使って `web-terminal`コンポーネントのFat Manifestを作る場合：
+        -  `mycluster.icp：8500/default/ibmcom/web-terminal：2.8.1` - マルチアーキテクチャ・イメージの名前
+        -  `mycluster.icp：8500/default/ibmcom/web-terminal：2.8.1-x86_64` - x86_64イメージの名前
+        -  `mycluster.icp：8500/default/ibmcom/web-terminal：2.8.1-ppc64le` - Powerイメージの名前
+        -  `mycluster.icp：8500/default/ibmcom/web-terminal：2.8.1-s390` - zイメージの名前
 
-たとえば、次のイメージ名を使って `web-terminal`コンポーネントの太い目録を作るには：
+      ```
+      ./docker-linux-amd64 manifest create mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-86_64 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-ppc64le mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-s390x
+      ./docker-linux-amd64 manifest annotate mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-x86_64 --os linux --arch amd64
+      ./docker-linux-amd64 manifest annotate mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-ppc64le --os linux --arch ppc64le
+      ./docker-linux-amd64 manifest annotate mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/s390x/web-terminal:2.8.1-s390x --os linux --arch s390x
+      ./docker-linux-amd64 manifest inspect mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1
+      ./docker-linux-amd64 manifest push mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1
+      ```
 
-  -  `mycluster.icp：8500/default/ibmcom/web-terminal：2.8.1` - マルチアーキテクチャ・イメージの名前
-  -  `mycluster.icp：8500/default/ibmcom/web-terminal：2.8.1-x86_64` - x86_64イメージの名前
-  -  `mycluster.icp：8500/default/ibmcom/web-terminal：2.8.1-ppc64le` - Powerイメージの名前
-  -  `mycluster.icp：8500/default/ibmcom/web-terminal：2.8.1-s390` - zイメージの名前
+   **注意** 
+   マルチ・アーキテクチャ・イメージをレジストリにプッシュしても、イメージ・レイヤーはプッシュされません。アクセス可能なイメージへのポインタのリストをプッシュするだけです。これが、マルチ・アーキテクチャ・イメージを"マニフェスト・スト" と考える方がよい理由です。さらに、Fat Manifestを作成するときは、各プラットフォーム固有のDockerイメージがすべてレジストリに事前にインポートされていることを確認する必要があります。そうしないと、以下のようなターゲットイメージと異なるレジストリのソースイメージを使用できないというエラーが表示されます。<br>
+      `cannot use source images from a different registry than the target image: docker.io != mycluster.icp:8500` <br>
 
-```
-./docker-linux-amd64 manifest create mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-86_64 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-ppc64le mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-s390x
-./docker-linux-amd64 manifest annotate mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-x86_64 --os linux --arch amd64
-./docker-linux-amd64 manifest annotate mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1-ppc64le --os linux --arch ppc64le
-./docker-linux-amd64 manifest annotate mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1 mycluster.icp:8500/default/s390x/web-terminal:2.8.1-s390x --os linux --arch s390x
-./docker-linux-amd64 manifest inspect mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1
-./docker-linux-amd64 manifest push mycluster.icp:8500/default/ibmcom/web-terminal:2.8.1
-```
+   マニフェストリストをレジストリにプッシュした後は、以前イメージ名を使用していたときと同じように利用できます。
 
-**注意** 
-マルチ・アーキテクチャ・イメージをレジストリにプッシュしても、イメージ・レイヤーはプッシュされません。アクセス可能なイメージへのポインタのリストをプッシュするだけです。これが、マルチ・アーキテクチャ・イメージを"マニフェスト・スト" と考える方がよい理由です。さらに、Fat Manifestを作成するときは、各プラットフォーム固有のDockerイメージがすべてレジストリに事前にインポートされていることを確認する必要があります。そうしないと、以下のようなターゲットイメージと異なるレジストリのソースイメージを使用できないというエラーが表示されます。<br>
-`cannot use source images from a different registry than the target image: docker.io != mycluster.icp:8500` <br>
+   **注意** 
+   マニフェストリストのローカルコピーを保持したい場合は、-purgeフラグを削除してください。`manifest inspect`はレジストリのコピーではなくローカルのコピーを返すので、混乱を招く可能性があります。
 
-マニフェストリストをレジストリにプッシュした後は、以前イメージ名を使用していたときと同じように利用できます。
-
-**注意** 
-マニフェストリストのローカルコピーを保持したい場合は、-purgeフラグを削除してください。`manifest inspect`はレジストリのコピーではなくローカルのコピーを返すので、混乱を招く可能性があります。
-
-#### initコンテナの定義
+### initコンテナの定義
 [init container](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)は、アプリケーション・コンテナと一緒にパッケージ化したくないユーティリティをパッケージ化するなど、さまざまな理由で役に立ちます。あるいは、すべてのコンテナーを並行して開始するべきではないワークロードのための開始順序ロジックを含めるためにもりようできます。
 
 initコンテナを使用している場合、kubernetesのドキュメントで説明されているように、それらを記述するために `annotations`の代わりに`spec`構文を使用してください。これらの`annotations` はKubernetes 1.6と1.7では非推奨となり、Kubernetes 1.8ではサポートされなくなりました。
 
-#### ノード・アフィニティ
+### ノード・アフィニティ
 IBMは、[nodeAffinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity-beta-feature)を使用して、妥当なプラットフォームにチャートのインストールがされるようにします。
 ノード・アフィニティは、そのアーキテクチャに基づいて、ポッドが実行されるノードを制限する機能を提供します。異種クラスタでは、特定のハードウェア・アーキテクチャを持つノードでのみ特定のワークロードを実行するかどうかをユーザーが選択できます。
 IBMは`arch`パラメーターを`values.yaml`に追加し、そのパラメーターを参照してポッドに`nodeAffinity`を設定することをお勧めします。サンプルとして、[ibm-odm-dev](https://github.com/IBM/charts/blob/master/stable/ibm-odm-dev/templates/deployment.yaml) を見てください。
 
-#### ストレージ (Persitent Volume / Persistent Volume Claim)
+### ストレージ (Persitent Volume / Persistent Volume Claim)
 リソースの割り当ては環境固有であり、チャートのデプロイメント担当者には許可されていないこともあるため、チャート内にPersistentVolume定義を作成することはお勧めできません。永続的なストレージが必要な場合は、チャートに[kubernetesのドキュメント](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#writing-portable-configuration)に記載されているように、Persistent Volume Claimを含める必要があります。
 
 管理者がデプロイのために事前に作成しなければならない必要な永続ボリュームまたはストレージクラスは、README.mdに明確に文書化されている必要があります。
 
-##### パラメータのグループ化と命名
+### パラメータのグループ化と命名
 [環境変数に関するHelmベストプラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md)には、[命名規則](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md#naming-conventions)、[使用方法(マップではなく配列)](https://github.com/helm/helm/blob/master/docs/chart_best_practices/values.md#consider-how-users-will-use-your-values)、[YAMLフォーマット](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md#flat-or-nested-values)、[タイプの明確化](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md#make-types-clear)のガイドラインが含まれています。 <br>
 以下のガイドラインは、共通の名前、値、およびグループ化を使用することによって、チャート全体で一貫したユーザー・エクスペリエンスを提供するためにこれらを基にしています。複数のインスタンスが存在する場合(例えば、複数のPersistentVolumeClaimが必要な場合、パラメータはpvc1、pvc2、…のようなグループ化トークンの下にネストされるべきです)、ネストされた構造はグループ化を最初のトークンとして定義されます。
 
-  * パラメータは、ネストされた値が`.`で区切られた1つ以上のトークンで構成されている必要があります。<br>
-    トークンの左から右への読み取りは、一貫して次の順序と名前で行われる必要があります(パラメータが特定のチャートに適用可能な場合)。
-    1. グループ化/命名トークン(複数のインスタンスの場合 - すなわちpvc1、pvc2)
-    1. 修飾子(たとえば persistence)
-    1. パラメータ(たとえば enabled)
+  #### パラメータは、ネストされた値が`.`で区切られた1つ以上のトークンで構成されている必要があります。<br>
+   トークンの左から右への読み取りは、一貫して次の順序と名前で行われる必要があります(パラメータが特定のチャートに適用可能な場合)。
+   1. グループ化/命名トークン(複数のインスタンスの場合 - すなわちpvc1、pvc2)
+   1. 修飾子(たとえば persistence)
+   1. パラメータ(たとえば enabled)
     <br>
     values.yamlからの抜粋：
       ```
@@ -257,9 +250,9 @@ IBMは`arch`パラメーターを`values.yaml`に追加し、そのパラメー�
               secretName: "docker-secret"
       ```
  
-  * チャート全体でグループとして設定されることが多いフィールドには、グローバル・パラメータをお勧めします。<br>
-    これにより、チャートを変更せずにサブチャートとして使用できるようになります。
-    一般的な例は `global.image.secretName`で、`imagePullSecret`などで利用されます。
+  #### チャート全体でグループとして設定されることが多いフィールドには、グローバル・パラメータをお勧めします。<br>
+   これにより、チャートを変更せずにサブチャートとして使用できるようになります。
+   一般的な例は `global.image.secretName`で、`imagePullSecret`などで利用されます。
     <br>
     ポッド定義からの抜粋：
       ```
@@ -268,22 +261,22 @@ IBMは`arch`パラメーターを`values.yaml`に追加し、そのパラメー�
                - name：{{.Values.global.image.secretName}}
             {{- end }}
       ```
-共通のIBM Cloud Privateパラメーター
+  #### 共通のIBM Cloud Privateパラメーター
 
-| **パラメータ** | **定義** | **値** |
-| --- | --- | --- |
-| image.pullPolicy | Kubernetesイメージプルポリシー常に、しない、またはIfNotPresent。最新のタグが指定されている場合はデフォルトのAlways、それ以外の場合はIfNotPresentがデフォルトになります。 |
-| image.repository |リポジトリ接頭辞を含む画像の名前(必要な場合) [Dockerタグの詳細説明](https://docs.docker.com/edge/engine/reference/commandline/tag/#description)を参照してください。
-| image.tag | Dockerの画像タグ| [Dockerタグの説明](https://docs.docker.com/edge/engine/reference/commandline/tag/#description)を参照してください。
-| persistence.enabled |持続性ボリューム(PV)が有効真、偽|
-| persistence.storageClassNameまたは[volume] .storageClassName | Kubernetesシステム管理者によって事前作成されたStorageClass。 | |
-| persistence.existingClaimNameまたは[volume] .existingClaimName |特定の事前作成されたPersistence Volume Claim(PVC)の名前。 |
-| persistence.sizeまたは[volume] .size |必要なストレージアプリケーションの量(Gi、Mi) |
-| resources.limits.cpu |許可されるCPUの最大量を説明します。 | [Kubernetes  -  CPUの意味](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning- of-cpu)を参照してください。
-| resources.limits.memory |許可されている最大メモリ量を示します。 | [Kubernetes  - メモリの意味](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-memory)を参照してください。
-| resources.requests.cpu |必要なCPUの最小量を記述します - 指定されていない場合はデフォルトでlimit(指定されている場合)またはそれ以外の場合は実装定義の値になります。 | [Kubernetes  -  CPUの意味](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning- of-cpu)を参照してください。
-| resources.requests.memory |必要な最小メモリ量を記述します。指定されていない場合、デフォルトでlimit(指定されている場合)、またはそれ以外の場合は実装定義の値になります。 | [Kubernetes  - メモリの意味](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-memory)を参照してください。
-| service.type |サービスの種類を指定|有効なオプションは、ExternalName、ClusterIP、NodePort、およびLoadBalancerです。 [公開サービス - サービスの種類](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types)を参照してください。
+   | **パラメータ** | **定義** | **値** |
+   | --- | --- | --- |
+   | image.pullPolicy | Kubernetesイメージ・プルポリシー |`Always`,`Never`または`IfNotPresent`。<br>`latest`タグが指定されている場合はAlwaysがデフォルト、それ以外の場合はIfNotPresentがデフォルトになります。|
+   | image.repository |リポジトリ接頭辞を含むイメージの名前(必要な場合) |[Dockerタグの詳細説明](https://docs.docker.com/edge/engine/reference/commandline/tag/#description)を参照してください。
+   | image.tag | Dockerのイメージ・タグ| [Dockerタグの説明](https://docs.docker.com/edge/engine/reference/commandline/tag/#description)を参照してください。
+   | persistence.enabled | 永続ボリューム(PersistentVolume)が有効か否か |`true`,`false`|
+   | persistence.storageClassName<br>[volume].storageClassName | Kubernetesシステム管理者によって事前作成されたStorageClass。 | |
+   | persistence.existingClaimName<br>[volume].existingClaimName | 特定の事前作成されたPersistence Volume Claim(PVC)の名前。 |
+   | persistence.size<br>[volume].size |必要なストレージアプリケーションの量(Gi、Mi) |
+   | resources.limits.cpu|許可されるCPUの最大量を説明します。| [Kubernetes - CPUの意味](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning- of-cpu)を参照してください。
+   | resources.limits.memory | 許可されている最大メモリ量を示します。 | [Kubernetes - メモリの意味](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-memory)を参照してください。
+   | resources.requests.cpu | 必要なCPUの最小量を記述します - 指定されていない場合はデフォルトでlimit(指定されている場合)またはそれ以外の場合は実装で定義された値になります。 | [Kubernetes - CPUの意味](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-cpu)を参照してください。
+   | resources.requests.memory |必要な最小メモリ量を記述します。指定されていない場合、デフォルトでlimit(指定されている場合)、またはそれ以外の場合は実装で定義された値になります。 | [Kubernetes - メモリの意味](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-memory)を参照してください。
+   | service.type |サービスの種類を指定|有効なオプションは、`ExternalName`、`ClusterIP`、`NodePort`および`LoadBalancer`です。<br> [公開サービス - サービスの種類](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types)を参照してください。
 
 追加のガイダンス：
 
