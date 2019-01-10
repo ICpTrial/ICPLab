@@ -192,7 +192,7 @@ zプラットフォーム用のイメージの開発について詳しくは、[
    #### Fat Manifestをデプロイする
    Fat Manifest のデプロイに推奨される方法は、dockerのツール manifest サブコマンドを使用することです。まだPRレビュー・プロセスの段階ですが、マルチ・アーキテクチャ・イメージを作成して任意のdockerレジストリにプッシュするために簡単に使用できます。
 
-   docker-cliツールは、さまざまなプラットフォーム用にこちらからダウンロードできます。[https://github.com/clnperez/cli/releases/tag/v0.1](https://github.com/clnperez/cli/releases/tag /v0.1)
+   docker-cliツールは、さまざまなプラットフォーム用にこちらからダウンロードできます。[https://github.com/clnperez/cli/releases/tag/v0.1](https://github.com/clnperez/cli/releases/tag/v0.1)
 
    たとえば、次のイメージ名を使って `web-terminal`コンポーネントのFat Manifestを作る場合：
         -  `mycluster.icp：8500/default/ibmcom/web-terminal：2.8.1` - マルチアーキテクチャ・イメージの名前
