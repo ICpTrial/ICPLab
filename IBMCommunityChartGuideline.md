@@ -47,7 +47,7 @@ IBM Communityチャートリポジトリへの貢献に関するルールは、G
 
 | **要件** | **説明** |
 | ------- | ------- |
-| [**ディレクトリ構造**](#directory-structure)|チャートのソースは `chart/community`ディレクトリに追加されなければなりません。`helm package`を使って`.tgz`ファイルとしてパッケージ化されたチャートアーカイブは、Helmリポジトリである `chart/repo/community`ディレクトリに追加されなければなりません。 *あなたの成果物*でindex.yamlを更新しないでください。index.yamlはビルドプロセスによって自動的に更新されます。|
+| [**ディレ#クトリ構造**](#directory-structure)|チャートのソースは `chart/community`ディレクトリに追加されなければなりません。`helm package`を使って`.tgz`ファイルとしてパッケージ化されたチャートアーカイブは、Helmリポジトリである `chart/repo/community`ディレクトリに追加されなければなりません。 *あなたの成果物*でindex.yamlを更新しないでください。index.yamlはビルドプロセスによって自動的に更新されます。|
 | [**チャート名**](#chart-name)|Helmチャートの名前は[Helmチャートのベストプラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/conventions.md#chart-names) に従う必要があります。チャート名は、チャートを含むディレクトリと同じである必要があります。会社または組織によって提供された図表には、会社または組織の名前を接頭辞として付けることができます。IBMによって提供されたチャートのみに`ibm-`というプレフィックスを付けることができます。|
 | [**チャートファイルの構造**](#chart-file-structure)|チャートは標準のHelmファイル構造に従う必要があります。Chart.yaml、values.yaml、README.md、templates、templates/NOTES.txt はすべて存在し、有用な内容を持っている必要があります。|
 | [**チャートバージョン**](#chart-version)| [Helmチャートのベストプラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/conventions.md#version-numbers)に従って、SemVer2ナンバリングを使用し、チャートを更新する必要があります。変更がREADMEファイルのみに対するものでない限り、更新されたバージョン番号を含める必要があります。|
@@ -272,121 +272,108 @@ IBMは`arch`パラメーターを`values.yaml`に追加し、そのパラメー�
    | persistence.storageClassName<br>[volume].storageClassName | Kubernetesシステム管理者によって事前作成されたStorageClass。 | |
    | persistence.existingClaimName<br>[volume].existingClaimName | 特定の事前作成されたPersistence Volume Claim(PVC)の名前。 |
    | persistence.size<br>[volume].size |必要なストレージアプリケーションの量(Gi、Mi) |
-   | resources.limits.cpu|許可されるCPUの最大量を説明します。| [Kubernetes - CPUの意味](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning- of-cpu)を参照してください。
+   | resources.limits.cpu|許可されるCPUの最大量を説明します。| [Kubernetes - CPUの意味](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-cpu)を参照してください。
    | resources.limits.memory | 許可されている最大メモリ量を示します。 | [Kubernetes - メモリの意味](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-memory)を参照してください。
    | resources.requests.cpu | 必要なCPUの最小量を記述します - 指定されていない場合はデフォルトでlimit(指定されている場合)またはそれ以外の場合は実装で定義された値になります。 | [Kubernetes - CPUの意味](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-cpu)を参照してください。
    | resources.requests.memory |必要な最小メモリ量を記述します。指定されていない場合、デフォルトでlimit(指定されている場合)、またはそれ以外の場合は実装で定義された値になります。 | [Kubernetes - メモリの意味](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-memory)を参照してください。
    | service.type |サービスの種類を指定|有効なオプションは、`ExternalName`、`ClusterIP`、`NodePort`および`LoadBalancer`です。<br> [公開サービス - サービスの種類](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types)を参照してください。
 
-追加のガイダンス：
+  #### 追加のガイダンス
+  * 型変換エラーを避けるための文字列の引用符
+  * (必要ならば)ライセンス受諾文字列は、values.yamlの中で`not accepted`がデフォルトであるべきであり、GUIでユーザによって受諾されるとき`accept`に設定されるようにします。
 
- - 型変換エラーを避けるための文字列の引用符共通IB
- - (必要ならば)ライセンス受諾文字列はvalues.yamlの中で `受諾されない`にデフォルトであるべきであり、GUIでユーザによって受諾されるとき `受諾`に設定されるでしょう。
+### Values メタデータ
+IBM Cloud Privateは、パスワードを含むフィールド、非表示フィールド、チェックボックスとしてのブール値のレンダリング、チェックボックス、許可値の指定などのメタデータの定義をサポートして、IBM Cloud Private GUIでの豊富なデプロイメント体験を提供します。このメタデータは `values-metadata.yaml`という名前のファイルを使ってチャート内で定義されます。<br>
+  このファイルの使用方法の例については、[このリポジトリのサンプルチャート](https://github.com/IBM/charts/blob/master/community/sample-chart/values-metadata.yaml)や多数の[チャートリポジトリにIBM提供のチャート](https://github.com/IBM/charts/tree/master/stable)を参照してください
 
-##値メタデータ
+### ラベルとアノテーション
+Helmは[ラベルと注釈](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/labels.md) の作成に関して、一連のベストプラクティスを定義しています。このドキュメントは、リソースを識別し、オペレータなどのツールにクエリ可能なラベルを提供できるメタデータに焦点を当てています。したがって、リソースのラベルはまとめて一意にする必要があります。さらに「ベストプラクティス」リンクには、Helmチャートが使用する一般的なラベルのセットが記載されています。
+IBMは、チャートで定義されているすべてのKubernetesリソースで、すべてのチャートが"heritage, release, chart and app"」の標準ラベルを使用することをお勧めします。
 
-IBM Cloud Privateは、パスワードを含むフィールド、非表示フィールド、チェックボックスとしてのブール値のレンダリング、チェックボックス、許可値の指定などのメタデータの定義をサポートして、IBM Cloud Private GUIでの豊富なデプロイメント体験を提供します。このメタデータは `values-metadata.yaml`という名前のファイルを使ってチャート内で定義されます。このファイルの使用方法の例については、[このリポジトリのサンプルチャート](https://github.com/IBM/charts/blob/master/community/sample-chart/values-metadata.yaml)を参照してください。多数の[チャートリポジトリにIBM提供のチャート](https://github.com/IBM/charts/tree/master/stable)
+### liveneess Prove とreadiness Prove
 
-##ラベルと注釈
+  
+### Kind
+リソースを定義するすべてのhelmテンプレートには`Kind`が必要です。 [Helmベスト・プラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_template_guide/yaml_techniques.md)は、単一のテンプレート・ファイルに複数のリソースを定義しないようにすることです。
 
-Helmは[ラベルと注釈]の作成に関する一連のベストプラクティスを定義しています(https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/labels.md)。このドキュメントで扱う概念は、リソースを識別し、オペレータなどのツールにクエリ可能なラベルを提供できるメタデータに焦点を当てています。したがって、リソースのラベルはまとめて一意にする必要があります。さらに、「ベストプラクティス」リンクには、ヘルムチャートが使用する一般的なラベルのセットが記載されています。
+### コンテナ・セキュリティ特権
+可能な限り、ワークロードはコンテナーに対して昇格されたセキュリティー特権を使用しないでください。昇格した特権が必要な場合、チャートは目的の機能を実現するために必要な最小レベルの特権を要求する必要があります。
+IBMでは、 `securityContext`の中で、`privilege：true`や `capabilities：add：[" ALL "]`の使用を避けることを推奨しています。高度な特権が必要な場合は、目的の機能を実装するために必要な最小限の特権のみを追加することをお勧めします。
 
-チャートで定義されているすべてのKubernetesリソースで、すべてのチャートが「遺産、リリース、チャート、およびアプリ」の標準ラベルを使用することをお勧めします。
+### Kubernetesのセキュリティ特権
+チャートは、クラスタ管理者などの管理ロールを持たない通常のユーザがデプロイできるようにします。昇格したKubernetesの役割が必要な場合は、これをチャートのREADME.mdに明確に記載する必要があります。
 
-##活気とレディネスプローブ
+### hostPathを避ける
+堅牢なストレージ・ソリューションではないので、 `hostPath`ストレージの使用は避けてください。 `hostPath`は動的なプロビジョニング、冗長性、あるいはノード間でポッドを移動する機能をサポートしません。
 
-チャートソース
+### hostNetworkを避ける
+ポッドが `hostNetwork：true`で設定されている場合、そのようなポッドで実行されているアプリケーションは、ポッドが開始されたワーカーノードのネットワーク・インターフェースを直接見ることができます。これは、アプリケーションがホストマシンのすべてのネットワークインターフェースでアクセス可能になることを意味します。
+これにより、2つのポッドが同じポートを使用することを妨げ、特定のノードのIPアドレスに依存することになります。
+hostNetworkは、アプリケーションをクラスタの外部からアクセス可能にするための良い方法ではありません。 IBMは外部からアクセスするために `NodePort`または` Ingress`を使うことを提案しています。
+ネットワークモニタやIngressコントローラのように、ホストレベルのネットワーキングに直接アクセスする必要があるチャートを作成しているのでなければ、IBMは `hostNetwork`を避けることを推奨します。
 
-##種類
+  ##ドキュメントリソースの使用量
 
-リソースを定義するすべてのhelmテンプレートには「種類」が必要です。 [Helmベストプラクティス](https://github.com/kubernetes/helm/blob/master/docs/chart_template_guide/yaml_techniques.md)は、単一のテンプレートファイルに複数のリソースを定義しないようにすることです。
+  チャートには、必要な最小のCPU、メモリ、ストレージのリソース、およびデフォルトで要求されるCPU、メモリ、およびストレージの量をREADME.mdで明確に文書化する必要があります。
 
-##コンテナセキュリティ特権
+  ##メーター統合
 
-可能な限り、ワークロードはコンテナーに対してエスカレートされたセキュリティー特権を使用しないでください。昇格した特権が必要な場合、チャートは目的の機能を実現するために必要な最小レベルの特権を要求する必要があります。
+  IBM Cloud Privateメータリングサービスは、実行中のワークロードを構成するコンテナ化されたコンポーネントによって利用可能、上限が設定されている、および/または利用されている仮想プロセッサコアに基づいて、IBM Cloud Privateで実行されているコンテナの使用情報を収集します。
 
-IBMでは、 `securityContext`の中で、` privilege：true`や `capabilities：add：[" ALL "]の使用を避けることを推奨しています。高度な特権が必要な場合は、目的の機能を実装するために必要な最小限の特権のみを追加することをお勧めします。
+  仮想コア情報は、IBM Cloud Privateクラスター内で稼働している計測デーモンによって自動的に収集されます。適切なメトリックが収集され、実行中のオファリングに起因するように、ワークロードはこのデーモンに対して自分自身を識別する必要があります。
 
-## Kubernetesのセキュリティ特権
+  メタデータは、計測目的で収集されたメトリクスと展開されたオファリングを関連付けるために使用されます。メータリングサービスは、実行中のオファリングのメトリックを単純に測定し、UIを介して、そしてダウンロード可能なCSV形式のデータとして、過去の使用状況データをユーザーに提供します。
 
-チャートは、クラスタ管理者などの管理ロールを持たない通常のユーザが配置できるようにします。昇格したKubernetesの役割が必要な場合は、これをチャートのREADME.mdに明確に記載する必要があります。
+  ワークロードは、ポッドのメタデータアノテーションを使用して、メーターリーダーの製品ID、製品名、および製品バージョンを指定する必要があります。これは、特定の展開のためのヘルムチャートのスペックテンプレートセクションで定義されています。
 
-## hostPathを避ける
+    - 製品名(「ｐｒｏｄｕｃｔＮａｍｅ」)は、人間が読むことができるオファリングの名前である。
+    - 商品識別子( `productID`)はオファリングを一意に識別します(一意性を保証するためにあなたの会社または組織名で名前空間を付けてください)
+    - 製品バージョン識別子( `productVersion`)はオファリングのバージョンを指定します
 
-堅牢なストレージソリューションではないので、 `hostPath`ストレージの使用は避けてください。 `hostPath`は動的なプロビジョニング、冗長性、あるいはノード間でポッドを移動する機能をサポートしません。
+  `` `
+      種類：展開
+      スペック：
+        テンプレート：
+           メタデータ：
+             注釈：
+                productName：IBMサンプルチャート
+                productID：com.ibm.chartscommunity.samplechart.0.1.2
+                製品バージョン：0.1.2
+  `` `
 
-## hostNetworkを避ける
+  ##ロギング統合
 
-ポッドが `hostNetwork：true`で設定されている場合、そのようなポッドで実行されているアプリケーションはポッドが開始されたワーカーノードのネットワークインターフェースを直接見ることができます。これは、アプリケーションがホストマシンのすべてのネットワークインターフェースでアクセス可能になることを意味します。
+  IBM Cloud Privateノードは、標準出力および標準エラー・ストリームに書き込まれたログ・データを自動的に収集し、それを統合ロギング・サービス(Elasticsearch / Logstash / Kibana)に転送するようになっています。
 
-これにより、2つのポッドが同じポートを使用するのを防ぎ、特定のノードのIPアドレスに依存することになります。
+  ワークロード・コンテナーは、個別のログ・ファイルではなく、ログ・データをstdoutおよびstderrに書き込む必要があります。これにより、それらはIBM Cloud Privateロギング・サービスによって自動的に消費される可能性があります。ユーザーがそれらをダウンロードしてKibanaにインポートできるように、ワークロードには関連するKibanaダッシュボードへのリンクをREADME.mdに含めることをお勧めします。
 
-ホストネットワーキングは、アプリケーションをクラスタの外部からアクセス可能にするための良い方法ではありません。 IBMはこれを達成するために `NodePort`または` Ingress`を使うことを提案しました。
+  ##モニタリング統合
 
-ネットワークモニタやイングレスコントローラのように、ホストレベルのネットワーキングに直接アクセスする必要があるチャートを作成しているのでなければ、IBMは `hostNetwork`を避けることを推奨します。
+  ワークロードはデフォルトのIBM Cloud Privateモニタリングサービス(Prometheus / Grafana)と統合する必要があります。PrometheusメトリックスをKubernetesの「Service」で公開し、そのエンドポイントに注釈を付けてIBM Cloud Privateモニタリングサービスによって自動的に消費されるようにします。 IBMは、独自のPrometheusまたはGrafanaのインスタンスをパッケージ化するのではなく、プラットフォームの監視サービスと統合することをお勧めします。これにより、ユーザーは中央のインスタンスからすべてのデータを取得でき、オーバーヘッドが削減されます。
 
-##ドキュメントリソースの使用量
+  PrometheusエンドポイントをIBM Cloud Privateモニター・サービスに公開するには、以下の例に示すようにアノテーション `prometheus.io/scrape： 'true'`を使用してください。
 
-チャートには、必要な最小のCPU、メモリ、ストレージのリソース、およびデフォルトで要求されるCPU、メモリ、およびストレージの量をREADME.mdで明確に文書化する必要があります。
+  `` `
+      apiVersion：v1
+      種類：サービス
+      メタデータ：
+        注釈：
+          prometheus.io/scrape： 'true'
+        ラベル：
+          app：{{テンプレート "フルネーム"。 }}
+        名前：{{テンプレート "フルネーム"。メトリクス
+      スペック：
+        ports：
+         - 名前：{{.Values.service.name}}  - メトリック
+          targetPort：9157
+          ポート：9157
+          プロトコル：TCP
+        セレクタ：
+          app：{{テンプレート "フルネーム"。 }}
+        タイプ：ClusterIP
+  `` `
 
-##メーター統合
+  個々のメトリックス名は、ワークロードの名前を前に付ける必要があります(例えば、 `ibmmq_object_mqput_bytes`)。
 
-IBM Cloud Privateメータリングサービスは、実行中のワークロードを構成するコンテナ化されたコンポーネントによって利用可能、上限が設定されている、および/または利用されている仮想プロセッサコアに基づいて、IBM Cloud Privateで実行されているコンテナの使用情報を収集します。
-
-仮想コア情報は、IBM Cloud Privateクラスター内で稼働している計測デーモンによって自動的に収集されます。適切なメトリックが収集され、実行中のオファリングに起因するように、ワークロードはこのデーモンに対して自分自身を識別する必要があります。
-
-メタデータは、計測目的で収集されたメトリクスと展開されたオファリングを関連付けるために使用されます。メータリングサービスは、実行中のオファリングのメトリックを単純に測定し、UIを介して、そしてダウンロード可能なCSV形式のデータとして、過去の使用状況データをユーザーに提供します。
-
-ワークロードは、ポッドのメタデータアノテーションを使用して、メーターリーダーの製品ID、製品名、および製品バージョンを指定する必要があります。これは、特定の展開のためのヘルムチャートのスペックテンプレートセクションで定義されています。
-
-  - 製品名(「ｐｒｏｄｕｃｔＮａｍｅ」)は、人間が読むことができるオファリングの名前である。
-  - 商品識別子( `productID`)はオファリングを一意に識別します(一意性を保証するためにあなたの会社または組織名で名前空間を付けてください)
-  - 製品バージョン識別子( `productVersion`)はオファリングのバージョンを指定します
-
-`` `
-    種類：展開
-    スペック：
-      テンプレート：
-         メタデータ：
-           注釈：
-              productName：IBMサンプルチャート
-              productID：com.ibm.chartscommunity.samplechart.0.1.2
-              製品バージョン：0.1.2
-`` `
-
-##ロギング統合
-
-IBM Cloud Privateノードは、標準出力および標準エラー・ストリームに書き込まれたログ・データを自動的に収集し、それを統合ロギング・サービス(Elasticsearch / Logstash / Kibana)に転送するようになっています。
-
-ワークロード・コンテナーは、個別のログ・ファイルではなく、ログ・データをstdoutおよびstderrに書き込む必要があります。これにより、それらはIBM Cloud Privateロギング・サービスによって自動的に消費される可能性があります。ユーザーがそれらをダウンロードしてKibanaにインポートできるように、ワークロードには関連するKibanaダッシュボードへのリンクをREADME.mdに含めることをお勧めします。
-
-##モニタリング統合
-
-ワークロードはデフォルトのIBM Cloud Privateモニタリングサービス(Prometheus / Grafana)と統合する必要があります。PrometheusメトリックスをKubernetesの「Service」で公開し、そのエンドポイントに注釈を付けてIBM Cloud Privateモニタリングサービスによって自動的に消費されるようにします。 IBMは、独自のPrometheusまたはGrafanaのインスタンスをパッケージ化するのではなく、プラットフォームの監視サービスと統合することをお勧めします。これにより、ユーザーは中央のインスタンスからすべてのデータを取得でき、オーバーヘッドが削減されます。
-
-PrometheusエンドポイントをIBM Cloud Privateモニター・サービスに公開するには、以下の例に示すようにアノテーション `prometheus.io/scrape： 'true'`を使用してください。
-
-`` `
-    apiVersion：v1
-    種類：サービス
-    メタデータ：
-      注釈：
-        prometheus.io/scrape： 'true'
-      ラベル：
-        app：{{テンプレート "フルネーム"。 }}
-      名前：{{テンプレート "フルネーム"。メトリクス
-    スペック：
-      ports：
-       - 名前：{{.Values.service.name}}  - メトリック
-        targetPort：9157
-        ポート：9157
-        プロトコル：TCP
-      セレクタ：
-        app：{{テンプレート "フルネーム"。 }}
-      タイプ：ClusterIP
-`` `
-
-個々のメトリックス名は、ワークロードの名前を前に付ける必要があります(例えば、 `ibmmq_object_mqput_bytes`)。
-
-##ライセンスキーと価格
-チャートにデプロイまたは他の方法でワークロードを使用するためにライセンスキーが必要な場合は、チャートのREADME.mdの「前提条件」セクションに記載する必要があります。さらに、キーの入手方法に関する指示、および価格設定と試用に関する情報も、このステートメントと一緒に含めるかリンクして、チャートのインストールとワークロードの使用に必要なキーを容易に入手できるようにする必要があります。
+  ##ライセンスキーと価格
+  チャートにデプロイまたは他の方法でワークロードを使用するためにライセンスキーが必要な場合は、チャートのREADME.mdの「前提条件」セクションに記載する必要があります。さらに、キーの入手方法に関する指示、および価格設定と試用に関する情報も、このステートメントと一緒に含めるかリンクして、チャートのインストールとワークロードの使用に必要なキーを容易に入手できるようにする必要があります。
