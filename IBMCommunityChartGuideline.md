@@ -1,3 +1,5 @@
+※ この文書は [IBM Community Chart Guideline](https://github.com/IBM/charts/blob/master/GUIDELINES.md) (As of 2019/01/09) の翻訳です。
+
 # IBM Community Chart リポジトリ
 
 IBM Community chartリポジトリーは、HelmリポジトリーとHelmチャートのソースコードのリポジトリーの両方であり、IBM Cloud Privateで使用するためのコミュニティ開発のHelmチャートをホストすることを目的としています。GitHubの次の場所にあります。
@@ -16,28 +18,30 @@ IBM Cloud Private 2.1.0.3の時点では、IBM Community chartリポジトリー
 
 この文書は、IBM Cloud Private用のHelmチャートを作成し、それらをIBM Communityのチャート・リポジトリに登録することを目的としています。
 
-IBM Cloud Privateは、お客様自身が管理できるインフラストラクチャー上に、Kubernetesベースの環境を提供し、コンテナー・ベースのワークロードをデプロイおよび管理します。 IBM Cloud Privateワークロードは[Helm]（https://helm.sh/）を使用してデプロイされ、すべてのIBM Cloud Privateクラスターは[Tiller]（https://docs.helm.sh/glossary/#tiller）を含みます。他のKubernetesベースの環境にデプロイできるほとんどのHelmチャートは、変更を加えずにIBM Cloud Privateクラスターにデプロイできます。
+IBM Cloud Privateは、お客様自身が管理できるインフラストラクチャー上に、Kubernetesベースの環境を提供し、コンテナー・ベースのワークロードをデプロイおよび管理します。IBM Cloud Privateワークロードは[Helm](https://helm.sh/)を使用してデプロイされ、すべてのIBM Cloud Privateクラスターは[Tiller](https://docs.helm.sh/glossary/#tiller)を含みます。他のKubernetesベースの環境にデプロイできるHelmチャートは、通常、変更を加えずにIBM Cloud Privateクラスターにデプロイできます。
 
 この文書のガイドは、IBM Communityのチャート・リポジトリーへの登録の基準を満たすチャートを作成し、IBM Cloud Privateにデプロイするときにユーザーに付加価値を提供するためにIBM Cloud Privateプラットフォームと統合するチャートを作成するのに役立ちます。<br>
-これらのガイドラインに従って作成されたチャートは、他の標準Kubernetes環境との互換性を維持しますが、IBMが開発および提供したチャートをデプロイしたときに見られるエクスペリエンスと同様に、IBM Cloud Privateにおけるユーザー・エクスペリエンスを強化します。
+これらのガイドラインに従って作成されたチャートは 他の標準Kubernetes環境との互換性を維持しますが、IBMが開発および提供したチャートをデプロイしたときに見られるエクスペリエンスと同様に、IBM Cloud Privateにおけるユーザー・エクスペリエンスをより強化します。
 
 ----
 
 # IBMコミュニティチャートリポジトリへの貢献
 
-IBM Communityチャートリポジトリへの貢献に関する規則は、GitHubリポジトリ自体でホストされている[CONTRIBUTING.md]（https://github.com/IBM/charts/blob/master/CONTRIBUTING.md）でカバーされています。
+IBM Communityチャートリポジトリへの貢献に関するルールは、GitHubリポジトリにホストされている[CONTRIBUTING.md](https://github.com/IBM/charts/blob/master/CONTRIBUTING.md) にカバーされています。
 
-すべての寄付には、チャートのソースとパッケージ化されたHelmチャートの両方を含める必要があります。チャートのソースは `chart / community`ディレクトリに追加する必要があり、パッケージ化されたチャートの` .tgz`ファイルはHelmレポジトリディレクトリに追加する必要があります、 `chart / repo / community`
+登録する場合には、チャートのソースとパッケージ化されたHelmチャートの両方を含める必要があります。チャートのソースは `chart/community`ディレクトリに追加する必要があり、パッケージ化されたチャートの`.tgz`ファイルはHelmレポジトリ・ディレクトリ`chart/repo/community` に追加する必要があります。
 
-さらに、貢献ガイドラインでは、貢献するすべてのHelmチャートはApache 2.0ライセンスの下でライセンス供与する必要があり、すべての貢献にはコードをこのコミュニティに貢献する権利を証明する開発者サインオフを含める必要があります。 Origin]（https://developercertificate.org/）。
+さらに、登録ガイドラインでは、登録するすべてのHelmチャートはApache 2.0ライセンスの下でライセンス供与する必要があり、すべての登録にはコードをこのコミュニティに貢献する権利を証明する [Developer Certificate of Origin](https://developercertificate.org/) を含める必要があります。
 
-＆nbsp;
+----
 
-チャート投稿のための＃基準とガイドライン
+# チャート投稿のための基準とガイドライン
 
-以下の表は、Helmチャートを `https：// github.com / ibm / chart / community`ディレクトリに配信する準備をしている人のための準備ガイドとして使用する必要があります。 [** Table 1 **]（＃table-1-httpsgithubcomibmchartに貢献したすべてのチャートに必要）は、IBM Communityチャートリポジトリに貢献したすべてのチャートに必要な標準の短いリストを含みます。 [**表2 **]（＃ibm-cloud-privateでの改善されたユーザーエクスペリエンスに関する推奨事項）には、プラットフォームとさらに統合するチャートの作成方法に関するガイダンスが含まれています。 IBM Cloud Privateで高品質で一貫したユーザー・エクスペリエンスを提供します。表2のガイドラインを推奨しますが、必須ではありません。チャートの各項目には、このページのさらに下にある実装に関する詳細へのリンクがあります。
+以下の表は、Helmチャートを `https://github.com/ibm/chart/community`ディレクトリに配信する準備をしている人のための準備ガイドとして使用する必要があります。<br>
+[**表１**](＃表１ https://github.com/ibm.chart に登録すべてのチャートに必要)は、IBM Communityチャート・リポジトリに登録するすべてのチャートに必要な基準の短いリストを含みます。<br>
+[**表２**](＃表２ ibm cloud privateでの改善されたユーザーエクスペリエンスに関する推奨事項) には、ICPのプラットフォームとさらに統合するチャートの作成方法に関するガイダンスが含まれています。IBM Cloud Privateで高品質で一貫したユーザー・エクスペリエンスの提供が可能になります。表2のガイドラインに従うことを推奨しますが、必須ではありません。チャートの各項目には、このページのさらに下にある実装に関する詳細へのリンクがあります。<br>
 
-これらのガイドラインは[Helmベストプラクティス]（https://docs.helm.sh/chart_best_practices/）を補強することを目的としており、それらを置き換えるものではありません。下記のガイダンスがない場合は、Helmコミュニティのベストプラクティスを参照することをお勧めします。
+これらのガイドラインは[Helmベストプラクティス](https://docs.helm.sh/chart_best_practices/) を補強することを目的としており、それらを置き換えるものではありません。下記のガイダンスがない場合は、Helmコミュニティのベスト・プラクティスを参照することをお勧めします。
 
 ###表1：https://github.com/ibm/chartsに投稿されたすべてのチャートに必要
 
