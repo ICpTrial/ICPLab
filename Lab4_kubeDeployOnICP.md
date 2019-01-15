@@ -99,7 +99,7 @@
         8241afc74c6f: Pushed
         1.0: digest: sha256:a57817c674552e53f6cd4c1e0670a2238a454abee0d028365934b0c43a9ca77e size: 4089
         ```    
-1. アップロードされたイメージをICPコンソールから確認します。ICPコンソールにログインし、ナビゲーション・メニューから、[イメージ]を選択します。名前が"handson/mylibertyapp"のエントリーがあることを確認します。
+1. アップロードされたイメージをICPコンソールから確認します。ICPコンソールにログインし、ナビゲーション・メニューから、[コンテナー・イメージ]を選択します。名前が"handson/mylibertyapp"のエントリーがあることを確認します。
 ![Image](https://github.com/ICpTrial/ICPLab/blob/master/images/Lab4/Lab4_01_Image.png)
 
 
