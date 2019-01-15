@@ -385,4 +385,4 @@
 
 以上で、Lab7は終了です。<br>
 HELMの詳細な書き方については、[HELMドキュメント](https://docs.helm.sh/chart_template_guide/)を参照してください。<br>
-IBM による HELMのガイドについては [IBM COMMUNITY CHART GUIDANCE](https://github.com/IBM/charts/blob/master/GUIDELINES.md)をご参照ください。
+IBM による HELMのガイドについては [IBM COMMUNITY CHART GUIDANCE](https://github.com/ICpTrial/ICPLab/blob/ICPLab-Customized/IBMCommunityChartGuideline.md)をご参照ください。
